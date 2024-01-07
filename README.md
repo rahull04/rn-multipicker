@@ -2,6 +2,12 @@
 
 This package will provide features to select and search multiple dropdown items gracefully
 
+[rn-multipicker-ios-preview.webm](https://github.com/rahull04/rn-multipicker/assets/59685264/c8a87f3f-d698-4a41-bd7d-45af71391330)
+
+[rn-multipicker-android-preview.webm](https://github.com/rahull04/rn-multipicker/assets/59685264/c963034d-284c-4903-a477-e2a81a04cd84)
+
+
+
 ## Installation
 
 ```sh
