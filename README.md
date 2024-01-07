@@ -93,24 +93,34 @@ const App() {
 ### Properties
 
 | Name | Type | Default | Description |
-| placeholder | string |  | Placeholder text for Multi select input |
-| data | string[] |  | Dropdown items to be shown and selected |
-| onSelectedItemsChange | (selectedItems: string[]) => void |  | Callback called when a user selects or de-selects an item, passed |
+|---|---|---|---|
+| placeholder | string | --- | Placeholder text for Multi select input |
+|   |   |   |   |
+| data | string[] | --- | Dropdown items to be shown and selected |
+|   |   |   |   |
+| onSelectedItemsChange | (selectedItems: string[]) => void | --- | Callback called when a user selects or de-selects an item, passed |
+|   |   |   |   |
 | selectedItems | string[] | [] | Array of selected items |
-| styles | StyleProp<ViewStyle> |  | Multi select input style |
-| renderCheckedItem | (value: string, i: number) => JSX.Element |  | Render custom CheckedItem on Multi select input |
-| renderCheckBox | (
-    value: string,
-    active: boolean,
-    onCheck: (item: string) => void
-  ) => JSX.Element |  | Render custom Checkbox item on Multi select picker modal |
-| searchBarStyle | StyleProp<TextStyle> |  | Search bar style |
-| clearButtonStyle | StyleProp<ViewStyle> |  | Clear button style |
-| saveButtonStyle | StyleProp<ViewStyle> |  | Save button style |
-| renderClearButton | (onClearAll: () => void, disabled: boolean) => JSX.Element |  | Render custom clear button on Multi select picker modal |
-| renderSaveButton | (onApply: () => void, disabled: boolean) => JSX.Element |  | Render custom save button on Multi select picker modal |
+|   |   |   |   |
+| styles | StyleProp<ViewStyle> | --- | Multi select input style |
+|   |   |   |   |
+| renderCheckedItem | (value: string, i: number) => JSX.Element | --- | Render custom CheckedItem on Multi select input |
+|   |   |   |   |
+| renderCheckBox | (value: string, active: boolean, onCheck: (item: string) => void) => JSX.Element | --- | Render custom Checkbox item on Multi select picker modal |
+|   |   |   |   |
+| searchBarStyle | StyleProp<TextStyle> | --- | Search bar style |
+|   |   |   |   |
+| clearButtonStyle | StyleProp<ViewStyle> | --- | Clear button style |
+|   |   |   |   |
+| saveButtonStyle | StyleProp<ViewStyle> | --- | Save button style |
+|   |   |   |   |
+| renderClearButton | (onClearAll: () => void, disabled: boolean) => JSX.Element | --- | Render custom clear button on Multi select picker modal |
+|   |   |   |   |
+| renderSaveButton | (onApply: () => void, disabled: boolean) => JSX.Element | --- | Render custom save button on Multi select picker modal |
+|   |   |   |   |
 | modalTitleStyle | StyleProp<TextStyle> |  | Multi select picker modal header title style |
-| searchBarPlaceholder | string |  | Placeholder text shown on the search input |
+|   |   |   |   |
+| searchBarPlaceholder | string | --- | Placeholder text shown on the search input |
 
 
 ## Contributing
