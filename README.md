@@ -11,7 +11,7 @@ npm install rn-multipicker
 ## Usage
 
 ```js
-import { multiply } from 'rn-multipicker';
+import { RNMultiSelect } from 'rn-multi-select';
 
 // ...
 
