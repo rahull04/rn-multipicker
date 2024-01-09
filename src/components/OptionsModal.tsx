@@ -129,12 +129,14 @@ export const OptionsModal = ({
               placeholder={searchBarPlaceholder ?? 'Search..'}
               onChangeText={setSearchText}
             />
-            <Pressable
-              style={{ position: 'absolute', top: 17, right: 12 }}
-              onPress={() => setSearchText('')}
-            >
-              <Image source={Cross} style={{ width: 12, height: 12 }} />
-            </Pressable>
+            {searchText ? (
+              <Pressable
+                style={{ position: 'absolute', top: 17, right: 12 }}
+                onPress={() => setSearchText('')}
+              >
+                <Image source={Cross} style={{ width: 12, height: 12 }} />
+              </Pressable>
+            ) : null}
           </View>
           <ScrollView contentContainerStyle={{ paddingVertical: 8 }}>
             {checkedDropdownList.length ? <Text>Selected</Text> : null}
