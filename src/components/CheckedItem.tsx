@@ -19,7 +19,7 @@ export const CheckedItem = ({ title, onRemove }: CheckedItemProps) => {
     >
       <Text style={styles.title}>{title}</Text>
       <View style={styles.crossContainer}>
-        <Image source={Cross} style={{ width: 10, height: 10 }} />
+        <Image source={Cross} style={styles.cross} />
       </View>
     </Pressable>
   );
@@ -39,6 +39,17 @@ const styles = StyleSheet.create({
     maxWidth: 280,
     backgroundColor: '#6666ff',
   },
-  title: { color: 'white', fontSize: 12, marginRight: 6 },
-  crossContainer: { alignItems: 'center', justifyContent: 'center' },
+  title: {
+    color: 'white',
+    fontSize: 12,
+    marginRight: 6,
+  },
+  crossContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cross: {
+    width: 10,
+    height: 10,
+  },
 });

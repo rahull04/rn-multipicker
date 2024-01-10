@@ -118,7 +118,7 @@ export const OptionsModal = ({
         <View style={styles.headerContainer}>
           <Text style={[styles.headerTitle, modalTitleStyle]}>{title}</Text>
           <Pressable onPress={onClose}>
-            <Image source={Cross} style={{ width: 14, height: 14 }} />
+            <Image source={Cross} style={styles.cross} />
           </Pressable>
         </View>
         <View style={styles.content}>
@@ -131,14 +131,14 @@ export const OptionsModal = ({
             />
             {searchText ? (
               <Pressable
-                style={{ position: 'absolute', top: 17, right: 12 }}
+                style={styles.searchCrossContainer}
                 onPress={() => setSearchText('')}
               >
-                <Image source={Cross} style={{ width: 12, height: 12 }} />
+                <Image source={Cross} style={styles.searchCross} />
               </Pressable>
             ) : null}
           </View>
-          <ScrollView contentContainerStyle={{ paddingVertical: 8 }}>
+          <ScrollView contentContainerStyle={styles.scrollViewContent}>
             {checkedDropdownList.length ? <Text>Selected</Text> : null}
             {checkedDropdownList?.map((item) =>
               renderCheckBox ? (
@@ -159,7 +159,7 @@ export const OptionsModal = ({
               )
             )}
             {checkedDropdownList.length ? (
-              <Text style={{ marginVertical: 6 }}>Not Selected</Text>
+              <Text style={styles.notSelected}>Not Selected</Text>
             ) : null}
             {dropDownList
               .filter((val) => !checkedList.includes(val))
@@ -250,5 +250,27 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     marginRight: 12,
   },
-  headerTitle: { fontSize: 20, fontWeight: 'bold' },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  cross: {
+    width: 14,
+    height: 14,
+  },
+  searchCrossContainer: {
+    position: 'absolute',
+    top: 17,
+    right: 12,
+  },
+  searchCross: {
+    width: 12,
+    height: 12,
+  },
+  scrollViewContent: {
+    paddingVertical: 8,
+  },
+  notSelected: {
+    marginVertical: 6,
+  },
 });
