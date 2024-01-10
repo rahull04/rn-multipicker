@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     padding: 16,
-    paddingTop: Platform.OS === 'ios' ? 58 : 0,
+    paddingTop: Platform.OS === 'ios' ? 58 : 20,
   },
   checkboxContainer: {
     flexDirection: 'row',
