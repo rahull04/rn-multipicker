@@ -14,6 +14,12 @@ This package will provide features to select and search multiple dropdown items 
 npm install rn-multipicker
 ```
 
+or
+
+```sh
+yarn add rn-multipicker
+```
+
 ## Usage
 
 ```js
