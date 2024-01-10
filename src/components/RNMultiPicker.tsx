@@ -13,6 +13,9 @@ import {
 import { CheckedItem } from './CheckedItem';
 import ChevronDown from '../assets/icons/chevron-down.png';
 import { OptionsModal } from './OptionsModal';
+import { ViewButton } from './ViewButton';
+
+const MAX_CHECKED_ITEMS_VISIBLE = 10;
 
 export interface RNMultiSelectProps {
   placeholder: string;
@@ -40,6 +43,12 @@ export interface RNMultiSelectProps {
   modalTitleStyle?: StyleProp<TextStyle>;
   searchBarPlaceholder?: string;
   inputStyle?: StyleProp<ViewStyle>;
+  maxCheckedItemsVisible?: number;
+  renderViewMoreButton?: (
+    showAll: () => void,
+    remainingCount: number
+  ) => JSX.Element;
+  renderViewLessButton?: (showLess: () => void) => JSX.Element;
 }
 
 export const RNMultiSelect = ({
@@ -48,6 +57,7 @@ export const RNMultiSelect = ({
   onSelectedItemsChange,
   selectedItems,
   styles: multiSelectStyles,
+  inputStyle,
   renderCheckedItem,
   searchBarStyle,
   renderCheckBox,
@@ -57,9 +67,15 @@ export const RNMultiSelect = ({
   renderSaveButton,
   modalTitleStyle,
   searchBarPlaceholder,
+  maxCheckedItemsVisible = MAX_CHECKED_ITEMS_VISIBLE,
+  renderViewMoreButton,
+  renderViewLessButton,
 }: RNMultiSelectProps) => {
   const [dropDownVisible, setDropDownVisible] = useState(false);
   const [checkedList, setCheckedList] = useState(selectedItems);
+  const [showAllCheckedItems, setShowAllCheckedItems] = useState(false);
+
+  const showViewCheckedButton = checkedList.length > maxCheckedItemsVisible;
 
   const checkedDropdownList = data?.filter((i) => selectedItems.includes(i));
 
@@ -105,8 +121,34 @@ export const RNMultiSelect = ({
     return (
       <View style={styles.checkedItemsContainer}>
         <View style={styles.checkedList}>
-          {selectedItems?.map((value, i) =>
-            renderCheckedItem ? (
+          {selectedItems?.map((value, i) => {
+            const showViewMoreBtn =
+              i + 1 === maxCheckedItemsVisible + 1 && !showAllCheckedItems;
+            const exceedsMaxCheckedItemsPossible =
+              i + 1 > maxCheckedItemsVisible && !showAllCheckedItems;
+            const remainingCount = checkedList.length - maxCheckedItemsVisible;
+
+            if (showViewMoreBtn) {
+              // Display custom button if prop present
+              if (renderViewMoreButton) {
+                return renderViewMoreButton(
+                  () => setShowAllCheckedItems(true),
+                  remainingCount
+                );
+              }
+              return (
+                <ViewButton
+                  key="view_more"
+                  onPress={() => setShowAllCheckedItems((val) => !val)}
+                  remainingCount={remainingCount}
+                />
+              );
+            }
+            if (exceedsMaxCheckedItemsPossible) {
+              return null;
+            }
+
+            return renderCheckedItem ? (
               <View key={`${value}-${i}`}>{renderCheckedItem(value, i)}</View>
             ) : (
               <CheckedItem
@@ -114,8 +156,21 @@ export const RNMultiSelect = ({
                 title={value}
                 onRemove={onRemove}
               />
-            )
-          )}
+            );
+          })}
+          {showViewCheckedButton && showAllCheckedItems ? (
+            <>
+              {renderViewLessButton ? (
+                renderViewLessButton(() => setShowAllCheckedItems(false))
+              ) : (
+                <ViewButton
+                  more={false}
+                  onPress={() => setShowAllCheckedItems((val) => !val)}
+                  remainingCount={checkedList.length - maxCheckedItemsVisible}
+                />
+              )}
+            </>
+          ) : null}
         </View>
       </View>
     );
@@ -135,7 +190,7 @@ export const RNMultiSelect = ({
   return (
     <TouchableOpacity
       onPress={toggleDropdown}
-      style={[styles.multiSelect, multiSelectStyles]}
+      style={[styles.multiSelect, multiSelectStyles, inputStyle]}
     >
       {dropDownVisible && (
         <OptionsModal
