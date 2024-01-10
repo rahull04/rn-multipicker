@@ -108,7 +108,7 @@ const App() {
 |   |   |   |   |
 | selectedItems | string[] | [] | Array of selected items |
 |   |   |   |   |
-| styles | StyleProp<ViewStyle> | --- | Multi select input style |
+| inputStyle | StyleProp<ViewStyle> | --- | Multi select input style |
 |   |   |   |   |
 | renderCheckedItem | (value: string, i: number) => JSX.Element | --- | Render custom CheckedItem on Multi select input |
 |   |   |   |   |
@@ -127,6 +127,12 @@ const App() {
 | modalTitleStyle | StyleProp<TextStyle> |  | Multi select picker modal header title style |
 |   |   |   |   |
 | searchBarPlaceholder | string | --- | Placeholder text shown on the search input |
+|   |   |   |   |
+| maxCheckedItemsVisible | number | --- | Maximum number of checked items shown at a time on the multi select input box |
+|   |   |   |   |
+| renderViewMoreButton | (showAll: () => void, remainingCount: number) => JSX.Element | --- | Render custom View More button |
+|   |   |   |   |
+| renderViewLessButton | (showLess: () => void) => JSX.Element | --- | Render custom View More button |
 
 
 ## Contributing
