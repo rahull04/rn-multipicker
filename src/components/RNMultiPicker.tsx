@@ -19,6 +19,9 @@ export interface RNMultiSelectProps {
   data: string[];
   onSelectedItemsChange: (selectedItems: string[]) => void;
   selectedItems: string[];
+  /**
+   * @deprecated Use {@link inputStyle} instead.
+   */
   styles?: StyleProp<ViewStyle>;
   renderCheckedItem?: (value: string, i: number) => JSX.Element;
   renderCheckBox?: (
@@ -36,6 +39,7 @@ export interface RNMultiSelectProps {
   renderSaveButton?: (onApply: () => void, disabled: boolean) => JSX.Element;
   modalTitleStyle?: StyleProp<TextStyle>;
   searchBarPlaceholder?: string;
+  inputStyle?: StyleProp<ViewStyle>;
 }
 
 export const RNMultiSelect = ({
