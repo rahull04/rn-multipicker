@@ -79,9 +79,6 @@ export const OptionsModal = ({
   const dropDownList = data.filter((item) =>
     item.toLowerCase().startsWith(searchText?.toLowerCase() ?? '')
   );
-  const checkedDropdownList = checkedList.filter((item) =>
-    item.toLowerCase().startsWith(searchText?.toLowerCase() ?? '')
-  );
 
   const localAndAppliedAreEqual =
     initialCheckedList.sort().toString() === checkedList.sort().toString();
@@ -139,26 +136,22 @@ export const OptionsModal = ({
             ) : null}
           </View>
           <ScrollView contentContainerStyle={{ paddingVertical: 8 }}>
-            {checkedDropdownList.length ? <Text>Selected</Text> : null}
-            {checkedDropdownList?.map((item) =>
+            {checkedList.length ? <Text>Selected</Text> : null}
+            {checkedList?.map((item) =>
               renderCheckBox ? (
                 <View key={`checked-${item}`}>
-                  {renderCheckBox(
-                    item,
-                    checkedDropdownList.includes(item),
-                    onCheck
-                  )}
+                  {renderCheckBox(item, checkedList.includes(item), onCheck)}
                 </View>
               ) : (
                 <DefaultCheckBox
                   item={item}
                   key={`checked-${item}`}
                   onCheck={() => onCheck(item)}
-                  active={checkedDropdownList.includes(item)}
+                  active={checkedList.includes(item)}
                 />
               )
             )}
-            {checkedDropdownList.length ? (
+            {checkedList.length ? (
               <Text style={{ marginVertical: 6 }}>Not Selected</Text>
             ) : null}
             {dropDownList
