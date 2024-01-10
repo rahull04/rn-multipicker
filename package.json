@@ -137,7 +137,11 @@
   },
   "eslintIgnore": [
     "node_modules/",
-    "lib/"
+    "lib/",
+    "metro.config.js",
+    "babel.config.js",
+    "webpack.config.js",
+    "/example/App.js"
   ],
   "prettier": {
     "quoteProps": "consistent",

@@ -121,11 +121,9 @@ export const RNMultiSelect = ({
 
   const DefaultLabel = (
     <TouchableOpacity onPress={toggleDropdown} style={styles.defaultLabel}>
-      <Text style={{ color: '#666666', fontWeight: 'bold' }}>
-        {placeholder}
-      </Text>
-      <View style={{ marginRight: 4 }}>
-        <Image source={ChevronDown} style={{ width: 16, height: 16 }} />
+      <Text style={styles.defaultLabelText}>{placeholder}</Text>
+      <View style={styles.defaultLabelCrossContainer}>
+        <Image source={ChevronDown} style={styles.chevronDown} />
       </View>
     </TouchableOpacity>
   );
@@ -199,5 +197,16 @@ const styles = StyleSheet.create({
     marginRight: 4,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  defaultLabelText: {
+    color: '#666666',
+    fontWeight: 'bold',
+  },
+  defaultLabelCrossContainer: {
+    marginRight: 4,
+  },
+  chevronDown: {
+    width: 16,
+    height: 16,
   },
 });
