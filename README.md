@@ -23,7 +23,7 @@ yarn add rn-multipicker
 ## Usage
 
 ```js
-import { RNMultiSelect } from 'rn-multi-select';
+import { RNMultiSelect } from 'rn-multipicker';
 
 // ...
 
