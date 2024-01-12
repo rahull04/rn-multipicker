@@ -24,65 +24,9 @@ yarn add rn-multipicker
 
 ```js
 import { RNMultiSelect } from 'rn-multipicker';
+import { COUNTRIES } from './constants';
 
 // ...
-
-const COUNTRIES = [
-	"Afghanistan",
-	"Albania",
-	"Algeria",
-	"American Samoa",
-	"Andorra",
-	"Angola",
-	"Anguilla",
-	"Antarctica",
-	"Antigua and Barbuda",
-	"Argentina",
-	"Armenia",
-	"Aruba",
-	"Australia",
-	"Austria",
-	"Azerbaijan",
-	"Bahamas (the)",
-	"Bahrain",
-	"Bangladesh",
-	"Barbados",
-	"Belarus",
-	"Belgium",
-	"Belize",
-	"Benin",
-	"Bermuda",
-	"Bhutan",
-	"Bolivia (Plurinational State of)",
-	"Bonaire, Sint Eustatius and Saba",
-	"Bosnia and Herzegovina",
-	"Botswana",
-	"Bouvet Island",
-	"Brazil",
-	"British Indian Ocean Territory (the)",
-	"Brunei Darussalam",
-	"Bulgaria",
-	"Burkina Faso",
-	"Burundi",
-	"Cabo Verde",
-	"Cambodia",
-	"Cameroon",
-	"Canada",
-	"Cayman Islands (the)",
-	"Central African Republic (the)",
-	"Chad",
-	"Chile",
-	"China",
-	"Christmas Island",
-	"Cocos (Keeling) Islands (the)",
-	"Colombia",
-	"Comoros (the)",
-	"Congo (the Democratic Republic of the)",
-	"Congo (the)",
-	"Cook Islands (the)",
-	"Costa Rica",
-	"Croatia",
-];
 
 const App() {
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
@@ -134,7 +78,7 @@ const App() {
 |   |   |   |   |
 | searchBarPlaceholder | string | --- | Placeholder text shown on the search input |
 |   |   |   |   |
-| maxCheckedItemsVisible | number | --- | Maximum number of checked items shown at a time on the multi select input box |
+| maxCheckedItemsVisible | number | 10 | Maximum number of checked items shown at a time on the multi select input box |
 |   |   |   |   |
 | renderViewMoreButton | (showAll: () => void, remainingCount: number) => JSX.Element | --- | Render custom View More button |
 |   |   |   |   |
@@ -150,5 +94,3 @@ See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the 
 MIT
 
 ---
-
-Made with [create-react-native-library](https://github.com/callstack/react-native-builder-bob)
