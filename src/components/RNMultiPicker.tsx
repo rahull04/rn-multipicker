@@ -1,55 +1,13 @@
 import React, { useCallback, useState } from 'react';
-import {
-  TouchableOpacity,
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  type StyleProp,
-  type ViewStyle,
-  type TextStyle,
-} from 'react-native';
+import { TouchableOpacity, View, Text, StyleSheet, Image } from 'react-native';
 
-import { CheckedItem } from './CheckedItem';
 import ChevronDown from '../assets/icons/chevron-down.png';
 import { OptionsModal } from './OptionsModal';
-import { ViewButton } from './ViewButton';
+import type { RNMultiSelectProps } from './RNMultiPicker.type';
+import { useMultiPickerItems } from '../hooks/useMultiPickerItems';
+import { CheckedItemList } from './CheckedItemList';
 
 const MAX_CHECKED_ITEMS_VISIBLE = 10;
-
-export interface RNMultiSelectProps {
-  placeholder: string;
-  data: string[];
-  onSelectedItemsChange: (selectedItems: string[]) => void;
-  selectedItems: string[];
-  /**
-   * @deprecated Use {@link inputStyle} instead.
-   */
-  styles?: StyleProp<ViewStyle>;
-  renderCheckedItem?: (value: string, i: number) => JSX.Element;
-  renderCheckBox?: (
-    value: string,
-    active: boolean,
-    onCheck: (item: string) => void
-  ) => JSX.Element;
-  searchBarStyle?: StyleProp<TextStyle>;
-  clearButtonStyle?: StyleProp<ViewStyle>;
-  saveButtonStyle?: StyleProp<ViewStyle>;
-  renderClearButton?: (
-    onClearAll: () => void,
-    disabled: boolean
-  ) => JSX.Element;
-  renderSaveButton?: (onApply: () => void, disabled: boolean) => JSX.Element;
-  modalTitleStyle?: StyleProp<TextStyle>;
-  searchBarPlaceholder?: string;
-  inputStyle?: StyleProp<ViewStyle>;
-  maxCheckedItemsVisible?: number;
-  renderViewMoreButton?: (
-    showAll: () => void,
-    remainingCount: number
-  ) => JSX.Element;
-  renderViewLessButton?: (showLess: () => void) => JSX.Element;
-}
 
 export const RNMultiSelect = ({
   placeholder,
@@ -72,47 +30,22 @@ export const RNMultiSelect = ({
   renderViewLessButton,
 }: RNMultiSelectProps) => {
   const [dropDownVisible, setDropDownVisible] = useState(false);
-  const [checkedList, setCheckedList] = useState(selectedItems);
-  const [showAllCheckedItems, setShowAllCheckedItems] = useState(false);
 
-  const showViewCheckedButton = checkedList.length > maxCheckedItemsVisible;
+  const { checkedList, onCheck, onApply, onRemove, onCheckMultiple } =
+    useMultiPickerItems(selectedItems, onSelectedItemsChange, () =>
+      setDropDownVisible(false)
+    );
 
   const checkedDropdownList = data?.filter((i) => selectedItems.includes(i));
 
-  const onCheck = useCallback(
-    (item: string) => {
-      const checkedListCopy = JSON.parse(JSON.stringify(checkedList));
-      if (checkedListCopy.includes(item)) {
-        checkedListCopy.splice(checkedList.indexOf(item), 1);
-      } else {
-        checkedListCopy.push(item);
-      }
-      setCheckedList(checkedListCopy);
-    },
-    [checkedList, setCheckedList]
-  );
-
-  const onApply = () => {
-    onSelectedItemsChange(checkedList);
-    setDropDownVisible(false);
-  };
-
-  const toggleDropdown = () => {
+  const toggleDropdown = useCallback(() => {
     setDropDownVisible((curr) => !curr);
-  };
+  }, [setDropDownVisible]);
 
-  const onRemove = useCallback(
-    (value: string) => {
-      onSelectedItemsChange(selectedItems.filter((i) => i !== value));
-      setCheckedList((curr) => curr.filter((item) => item !== value));
-    },
-    [onSelectedItemsChange, selectedItems]
-  );
-
-  const onClose = () => {
-    setCheckedList(selectedItems);
+  const onClose = useCallback(() => {
+    onCheckMultiple(selectedItems);
     toggleDropdown();
-  };
+  }, [onCheckMultiple, selectedItems, toggleDropdown]);
 
   const renderCheckedItems = () => {
     if (!selectedItems.length) {
@@ -120,58 +53,15 @@ export const RNMultiSelect = ({
     }
     return (
       <View style={styles.checkedItemsContainer}>
-        <View style={styles.checkedList}>
-          {selectedItems?.map((value, i) => {
-            const showViewMoreBtn =
-              i + 1 === maxCheckedItemsVisible + 1 && !showAllCheckedItems;
-            const exceedsMaxCheckedItemsPossible =
-              i + 1 > maxCheckedItemsVisible && !showAllCheckedItems;
-            const remainingCount = checkedList.length - maxCheckedItemsVisible;
-
-            if (showViewMoreBtn) {
-              // Display custom button if prop present
-              if (renderViewMoreButton) {
-                return renderViewMoreButton(
-                  () => setShowAllCheckedItems(true),
-                  remainingCount
-                );
-              }
-              return (
-                <ViewButton
-                  key="view_more"
-                  onPress={() => setShowAllCheckedItems((val) => !val)}
-                  remainingCount={remainingCount}
-                />
-              );
-            }
-            if (exceedsMaxCheckedItemsPossible) {
-              return null;
-            }
-
-            return renderCheckedItem ? (
-              <View key={`${value}-${i}`}>{renderCheckedItem(value, i)}</View>
-            ) : (
-              <CheckedItem
-                key={`${value}-${i}`}
-                title={value}
-                onRemove={onRemove}
-              />
-            );
-          })}
-          {showViewCheckedButton && showAllCheckedItems ? (
-            <>
-              {renderViewLessButton ? (
-                renderViewLessButton(() => setShowAllCheckedItems(false))
-              ) : (
-                <ViewButton
-                  more={false}
-                  onPress={() => setShowAllCheckedItems((val) => !val)}
-                  remainingCount={checkedList.length - maxCheckedItemsVisible}
-                />
-              )}
-            </>
-          ) : null}
-        </View>
+        <CheckedItemList
+          selectedItems={selectedItems}
+          checkedListCount={checkedList.length}
+          maxCheckedItemsVisible={maxCheckedItemsVisible}
+          renderCheckedItem={renderCheckedItem}
+          renderViewMoreButton={renderViewMoreButton}
+          onRemove={onRemove}
+          renderViewLessButton={renderViewLessButton}
+        />
       </View>
     );
   };
@@ -200,7 +90,7 @@ export const RNMultiSelect = ({
           checkedList={checkedList}
           title={placeholder}
           data={data}
-          onClearAll={() => setCheckedList([])}
+          onClearAll={() => onCheckMultiple([])}
           searchBarStyle={searchBarStyle}
           renderCheckBox={renderCheckBox}
           clearButtonStyle={clearButtonStyle}
