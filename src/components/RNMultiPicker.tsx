@@ -78,10 +78,7 @@ export const RNMultiSelect = ({
   );
 
   return (
-    <TouchableOpacity
-      onPress={toggleDropdown}
-      style={[styles.multiSelect, multiSelectStyles, inputStyle]}
-    >
+    <>
       {dropDownVisible && (
         <OptionsModal
           onClose={onClose}
@@ -101,10 +98,15 @@ export const RNMultiSelect = ({
           searchBarPlaceholder={searchBarPlaceholder}
         />
       )}
-      {renderCheckedItems()}
-      {!!checkedDropdownList.length && FloatingLabel}
-      {!checkedDropdownList.length && DefaultLabel}
-    </TouchableOpacity>
+      <TouchableOpacity
+        onPress={toggleDropdown}
+        style={[styles.multiSelect, multiSelectStyles, inputStyle]}
+      >
+        {renderCheckedItems()}
+        {!!checkedDropdownList.length && FloatingLabel}
+        {!checkedDropdownList.length && DefaultLabel}
+      </TouchableOpacity>
+    </>
   );
 };
 
