@@ -1,0 +1,1 @@
+export const MAX_CHECKED_ITEMS_VISIBLE = 10;

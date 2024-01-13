@@ -1,21 +1,37 @@
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { CheckBox } from './CheckBox';
 import React from 'react';
+import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 
 interface DefaultCheckBoxProps {
   onCheck: () => void;
   item: string;
   active: boolean;
+  size?: number;
+  titleStyle?: StyleProp<TextStyle>;
+  containerStyle?: StyleProp<ViewStyle>;
+  tintColor?: string;
 }
 
 export const DefaultCheckBox = ({
   onCheck,
   item,
   active,
+  size,
+  titleStyle,
+  containerStyle,
+  tintColor,
 }: DefaultCheckBoxProps) => (
-  <TouchableOpacity onPress={onCheck} style={styles.checkboxContainer}>
-    <CheckBox active={active} />
-    <Text numberOfLines={2} ellipsizeMode="tail" style={styles.label}>
+  <TouchableOpacity
+    onPress={onCheck}
+    style={[styles.checkboxContainer, containerStyle]}
+  >
+    <CheckBox active={active} size={size} tintColor={tintColor} />
+    <Text
+      numberOfLines={2}
+      ellipsizeMode="tail"
+      style={[styles.label, titleStyle]}
+    >
       {item}
     </Text>
   </TouchableOpacity>

@@ -7,15 +7,31 @@ import { StyleSheet } from 'react-native';
 
 interface RadioProps {
   active: boolean;
+  size?: number;
+  tintColor?: string;
 }
 
-export const CheckBox = ({ active }: RadioProps) => {
+export const CheckBox = ({ active, size, tintColor }: RadioProps) => {
   return (
     <View>
       {active ? (
-        <Image source={CheckedBox} style={styles.icon} />
+        <Image
+          source={CheckedBox}
+          style={[
+            styles.icon,
+            size ? { height: size, width: size } : undefined,
+            tintColor ? { tintColor } : undefined,
+          ]}
+        />
       ) : (
-        <Image source={UnCheckedBox} style={styles.icon} />
+        <Image
+          source={UnCheckedBox}
+          style={[
+            styles.icon,
+            size ? { height: size, width: size } : undefined,
+            tintColor ? { tintColor } : undefined,
+          ]}
+        />
       )}
     </View>
   );

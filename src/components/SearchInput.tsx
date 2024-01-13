@@ -47,6 +47,7 @@ const styles = StyleSheet.create({
   searchBar: {
     borderWidth: 1,
     paddingHorizontal: 12,
+    paddingRight: 32,
     paddingVertical: Platform.select({
       ios: 13,
       android: 8,

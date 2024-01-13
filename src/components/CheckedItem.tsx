@@ -7,15 +7,16 @@ import { Pressable } from 'react-native';
 export interface CheckedItemProps {
   title: string;
   onRemove: (value: string) => void;
+  id?: string;
 }
 
-export const CheckedItem = ({ title, onRemove }: CheckedItemProps) => {
+export const CheckedItem = ({ title, onRemove, id }: CheckedItemProps) => {
   return (
     <Pressable
       style={styles.checkedItem}
       onStartShouldSetResponder={() => true}
       onTouchEnd={(e) => e.stopPropagation()}
-      onPress={() => onRemove(title)}
+      onPress={() => onRemove(id ?? title)}
     >
       <Text style={styles.title}>{title}</Text>
       <View style={styles.crossContainer}>

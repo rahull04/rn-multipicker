@@ -3,11 +3,11 @@ import {
   Image,
   StyleSheet,
   Text,
-  Pressable,
   ScrollView,
   Modal,
   View,
   Platform,
+  KeyboardAvoidingView,
 } from 'react-native';
 import Cross from '../assets/icons/close.png';
 import { SearchInput } from './SearchInput';
@@ -15,6 +15,7 @@ import { useSearch } from '../hooks/useSearch';
 import type { OptionsModalProps } from './OptionsModal.type';
 import { DefaultCheckBox } from './DefaultCheckBox';
 import { DefaultFooterButton } from './DefaultFooterButton';
+import { TouchableOpacity } from 'react-native';
 
 const ALL_ITEMS_CHECKED_TEXT = 'No data available!';
 const TRY_CHANGING_SEARCH_TEXT = 'Try changing the search text!';
@@ -125,9 +126,9 @@ export const OptionsModal = ({
       <View style={styles.mainContainer}>
         <View style={styles.headerContainer}>
           <Text style={[styles.headerTitle, modalTitleStyle]}>{title}</Text>
-          <Pressable onPress={onClose}>
+          <TouchableOpacity onPress={onClose}>
             <Image source={Cross} style={styles.cross} />
-          </Pressable>
+          </TouchableOpacity>
         </View>
         <View style={styles.content}>
           <SearchInput
@@ -137,24 +138,30 @@ export const OptionsModal = ({
             onSearch={onSearch}
             clearSearch={clearSearch}
           />
-          <ScrollView contentContainerStyle={styles.scrollViewContent}>
-            {SelectedSection}
-            {NotSelectedHeaderSection}
-            {dropDownList?.map((item) =>
-              renderCheckBox ? (
-                <View key={`unchecked-${item}`}>
-                  {renderCheckBox(item, checkedList.includes(item), onCheck)}
-                </View>
-              ) : (
-                <DefaultCheckBox
-                  item={item}
-                  key={`unchecked-${item}`}
-                  onCheck={() => onCheck(item)}
-                  active={checkedList.includes(item)}
-                />
-              )
-            )}
-          </ScrollView>
+          <KeyboardAvoidingView
+            style={styles.keyboardAvoidingView}
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 70}
+          >
+            <ScrollView contentContainerStyle={styles.scrollViewContent}>
+              {SelectedSection}
+              {NotSelectedHeaderSection}
+              {dropDownList?.map((item) =>
+                renderCheckBox ? (
+                  <View key={`unchecked-${item}`}>
+                    {renderCheckBox(item, checkedList.includes(item), onCheck)}
+                  </View>
+                ) : (
+                  <DefaultCheckBox
+                    item={item}
+                    key={`unchecked-${item}`}
+                    onCheck={() => onCheck(item)}
+                    active={checkedList.includes(item)}
+                  />
+                )
+              )}
+            </ScrollView>
+          </KeyboardAvoidingView>
         </View>
         {Footer}
       </View>
@@ -182,15 +189,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 12,
-    marginRight: 12,
+    marginRight: 6,
   },
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
   },
   cross: {
-    width: 14,
-    height: 14,
+    width: 16,
+    height: 16,
   },
   scrollViewContent: {
     paddingVertical: 8,
@@ -213,4 +220,5 @@ const styles = StyleSheet.create({
     color: '#808080',
     fontSize: 14,
   },
+  keyboardAvoidingView: { flex: 1 },
 });

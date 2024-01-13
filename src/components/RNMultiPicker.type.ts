@@ -1,5 +1,19 @@
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 
+export interface SectionedMultiSelectData {
+  title: string;
+  data: {
+    id: string;
+    value: string;
+  }[];
+}
+
+export interface SectionedSelectedItems {
+  id: string;
+  title: string;
+  value: string;
+}
+
 export interface RNMultiSelectProps {
   placeholder: string;
   data: string[];
