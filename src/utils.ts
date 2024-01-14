@@ -1,4 +1,4 @@
-import type { SectionedMultiSelectData } from './components/RNMultiPicker.type';
+import type { SectionedMultiSelectData } from './components/BaseMultiPicker/RNMultiPicker.type';
 
 export const isSectioned = (data: any): data is SectionedMultiSelectData[] => {
   if (

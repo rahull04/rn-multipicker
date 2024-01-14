@@ -11,17 +11,19 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
 } from 'react-native';
-import Cross from '../assets/icons/close.png';
-import { SearchInput } from './SearchInput';
-import { useSearch } from '../hooks/useSearch';
-import type { OptionsModalProps } from './OptionsModal.type';
-import { DefaultCheckBox } from './DefaultCheckBox';
-import { DefaultFooterButton } from './DefaultFooterButton';
+import Cross from '../../assets/icons/close.png';
+import { SearchInput } from '../common/SearchInput';
+import { useSearch } from '../../hooks/useSearch';
+import type { OptionsModalProps } from '../BaseMultiPicker/OptionsModal.type';
+import { DefaultCheckBox } from '../common/DefaultCheckBox';
+import { DefaultFooterButton } from '../common/DefaultFooterButton';
 import type {
   SectionedMultiSelectData,
   SectionedSelectedItems,
-} from './RNMultiPicker.type';
-import ChevronDown from '../assets/icons/chevron-down.png';
+} from '../BaseMultiPicker/RNMultiPicker.type';
+import ChevronDown from '../../assets/icons/chevron-down.png';
+import { useSectionedDropdownList } from '../../hooks/useDropdownList';
+import { SectionedDropdownItem } from './SectionedDropdownItem';
 
 const ALL_ITEMS_CHECKED_TEXT = 'No data available!';
 const TRY_CHANGING_SEARCH_TEXT = 'Try changing the search text!';
@@ -71,24 +73,6 @@ export const SectionedOptionsModal = ({
   const [notSelectedDropdownVisible, setNotSelectedDropdownVisible] =
     useState(true);
 
-  const checkedDropDownList = useMemo(() => {
-    const dt: SectionedMultiSelectData[] = [];
-    data.forEach((value) => {
-      const objData: SectionedMultiSelectData['data'] = [];
-      // Create data array
-      value.data.forEach((item) => {
-        const isChecked = checkedList.find((chec) => chec.id === item.id);
-        if (isChecked) {
-          objData.push(item);
-        }
-      });
-      if (objData.length) {
-        dt.push({ title: value.title, data: objData });
-      }
-    });
-    return dt;
-  }, [data, checkedList]);
-
   const totalItems = useMemo(() => {
     let total = 0;
     data.forEach((value) => {
@@ -99,36 +83,14 @@ export const SectionedOptionsModal = ({
     return total;
   }, [data]);
 
-  const dropDownList = useMemo(() => {
-    const dt: SectionedMultiSelectData[] = [];
-    data.forEach((value) => {
-      const objData: SectionedMultiSelectData['data'] = [];
-      // Create data array
-      value.data.forEach((item) => {
-        const isChecked = checkedList.find((chec) => chec.id === item.id);
-        const valueContainsSearchText = item.value
-          .toLowerCase()
-          .startsWith(searchText?.toLowerCase() ?? '');
-        const titleContainsSearchText = value.title
-          .toLowerCase()
-          .startsWith(searchText?.toLowerCase() ?? '');
-        if (
-          !isChecked &&
-          (valueContainsSearchText || titleContainsSearchText)
-        ) {
-          objData.push(item);
-        }
-      });
-      if (objData.length) {
-        dt.push({ title: value.title, data: objData });
-      }
-    });
-    return dt;
-  }, [data, checkedList, searchText]);
+  const { dropDownList, checkedDropDownList } = useSectionedDropdownList(
+    data,
+    checkedList,
+    searchText
+  );
 
   const localAndAppliedAreEqual =
     initialCheckedList.sort().toString() === checkedList.sort().toString();
-
   const areAllItemsChecked = totalItems === checkedList.length;
 
   const SelectedSection = (
@@ -159,32 +121,20 @@ export const SectionedOptionsModal = ({
                       ...val,
                       title: item.title,
                     }));
-                    onRemoveMultiple([...checkedList, ...remainingItems]);
+                    onRemoveMultiple([...remainingItems]);
                   }}
                   active={true}
                   titleStyle={styles.title}
                 />
                 {item.data.map((value) => (
-                  <View key={`${value.id}-${i}`}>
-                    {renderCheckBox ? (
-                      <View key={`unchecked-${value.id}`}>
-                        {renderCheckBox(
-                          { ...value, title: item.title },
-                          !!checkedList.find((dt) => dt.id === value.id),
-                          onCheck
-                        )}
-                      </View>
-                    ) : (
-                      <DefaultCheckBox
-                        item={value.value}
-                        key={`unchecked-${value.value}`}
-                        onCheck={() => onCheck({ ...value, title: item.title })}
-                        active={!!checkedList.find((dt) => dt.id === value.id)}
-                        size={16}
-                        containerStyle={styles.smallCheckBoxStyle}
-                      />
-                    )}
-                  </View>
+                  <SectionedDropdownItem
+                    key={`${value.id}-${i}`}
+                    value={value}
+                    onCheck={onCheck}
+                    checkedList={checkedList}
+                    title={item.title}
+                    renderCheckBox={renderCheckBox}
+                  />
                 ))}
               </View>
             );
@@ -210,7 +160,7 @@ export const SectionedOptionsModal = ({
           />
         </Pressable>
       ) : null}
-      {!dropDownList.length ? (
+      {!dropDownList.length && notSelectedDropdownVisible ? (
         <>
           {areAllItemsChecked ? (
             <Text style={styles.notDataAvailableText}>
@@ -313,33 +263,14 @@ export const SectionedOptionsModal = ({
                           titleStyle={styles.title}
                         />
                         {item.data.map((value) => (
-                          <View key={`${value.id}-${i}`}>
-                            {renderCheckBox ? (
-                              <View key={`unchecked-${value.id}`}>
-                                {renderCheckBox(
-                                  { ...value, title: item.title },
-                                  !!checkedList.find(
-                                    (dt) => dt.id === value.id
-                                  ),
-                                  onCheck
-                                )}
-                              </View>
-                            ) : (
-                              <DefaultCheckBox
-                                item={value.value}
-                                key={`unchecked-${value.value}`}
-                                onCheck={() =>
-                                  onCheck({ ...value, title: item.title })
-                                }
-                                active={
-                                  !!checkedList.find((dt) => dt.id === value.id)
-                                }
-                                size={16}
-                                tintColor="#808080"
-                                containerStyle={styles.smallCheckBoxStyle}
-                              />
-                            )}
-                          </View>
+                          <SectionedDropdownItem
+                            key={`${value.id}-${i}`}
+                            value={value}
+                            onCheck={onCheck}
+                            checkedList={checkedList}
+                            title={item.title}
+                            renderCheckBox={renderCheckBox}
+                          />
                         ))}
                       </View>
                     );
@@ -417,15 +348,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderBottomWidth: 1,
-    borderBottomColor: '#bfbfbf',
+    borderBottomColor: '#8c8c8c',
     marginVertical: 12,
+    paddingTop: 8,
   },
   inverted: {
     transform: [{ rotate: '180deg' }],
   },
   title: {
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 18,
     paddingVertical: 4,
     color: '#404040',
   },

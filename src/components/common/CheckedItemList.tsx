@@ -2,7 +2,7 @@ import { StyleSheet, View } from 'react-native';
 import { ViewButton } from './ViewButton';
 import React, { useState } from 'react';
 import { CheckedItem } from './CheckedItem';
-import type { SectionedSelectedItems } from './RNMultiPicker.type';
+import type { SectionedSelectedItems } from '../BaseMultiPicker/RNMultiPicker.type';
 
 interface CheckedListProps {
   checkedListCount: number;

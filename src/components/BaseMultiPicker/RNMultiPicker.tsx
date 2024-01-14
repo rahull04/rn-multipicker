@@ -1,40 +1,16 @@
 import React, { useCallback, useState } from 'react';
-import { Image, Text, TouchableOpacity, View } from 'react-native';
-import type {
-  RNMultiSelectProps,
-  SectionedMultiSelectData,
-  SectionedSelectedItems,
-} from './RNMultiPicker.type';
-import { CheckedItemList } from './CheckedItemList';
-import ChevronDown from '../assets/icons/chevron-down.png';
-import { useSectionedMultiPickerItems } from '../hooks/useSectionedMultiPickerItems';
-import { SectionedOptionsModal } from './SectionedOptionsModal';
-import { rnMultiPickerStyles } from './commonStyles';
-import { MAX_CHECKED_ITEMS_VISIBLE } from '../constants';
+import { TouchableOpacity, View, Text, Image } from 'react-native';
 
-type OmmitedSectionedPickerProps = Omit<
-  RNMultiSelectProps,
-  | 'data'
-  | 'selectedItems'
-  | 'onSelectedItemsChange'
-  | 'renderCheckedItem'
-  | 'renderCheckBox'
->;
+import ChevronDown from '../../assets/icons/chevron-down.png';
+import { OptionsModal } from './OptionsModal';
+import type { RNMultiSelectProps } from './RNMultiPicker.type';
+import { useMultiPickerItems } from '../../hooks/useMultiPickerItems';
+import { CheckedItemList } from '../common/CheckedItemList';
+import { RNSectionedMultiPicker } from '../SectionedMultiPicker/RNSectionedMultiPicker';
+import { rnMultiPickerStyles as styles } from '../common/commonStyles';
+import { MAX_CHECKED_ITEMS_VISIBLE } from '../../constants';
 
-export interface RNSectionedMultiPickerProps
-  extends OmmitedSectionedPickerProps {
-  data: SectionedMultiSelectData[];
-  selectedItems: SectionedSelectedItems[];
-  onSelectedItemsChange: (selectedItems: SectionedSelectedItems[]) => void;
-  renderCheckedItem?: (value: SectionedSelectedItems, i: number) => JSX.Element;
-  renderCheckBox?: (
-    value: SectionedSelectedItems,
-    active: boolean,
-    onCheck: (item: SectionedSelectedItems) => void
-  ) => JSX.Element;
-}
-
-export const RNSectionedMultiPicker = ({
+export const RNMultiSelect = ({
   placeholder,
   data,
   onSelectedItemsChange,
@@ -53,8 +29,9 @@ export const RNSectionedMultiPicker = ({
   maxCheckedItemsVisible = MAX_CHECKED_ITEMS_VISIBLE,
   renderViewMoreButton,
   renderViewLessButton,
-}: RNSectionedMultiPickerProps) => {
+}: RNMultiSelectProps) => {
   const [dropDownVisible, setDropDownVisible] = useState(false);
+
   const {
     checkedList,
     onCheck,
@@ -62,8 +39,7 @@ export const RNSectionedMultiPicker = ({
     onRemove,
     onCheckMultiple,
     checkedDropdownList,
-    onRemoveMultiple,
-  } = useSectionedMultiPickerItems(
+  } = useMultiPickerItems(
     selectedItems,
     onSelectedItemsChange,
     () => setDropDownVisible(false),
@@ -84,7 +60,7 @@ export const RNSectionedMultiPicker = ({
       return null;
     }
     return (
-      <View style={rnMultiPickerStyles.checkedItemsContainer}>
+      <View style={styles.checkedItemsContainer}>
         <CheckedItemList
           selectedItems={selectedItems}
           checkedListCount={checkedList.length}
@@ -95,24 +71,18 @@ export const RNSectionedMultiPicker = ({
           /* @ts-ignore */
           onRemove={onRemove}
           renderViewLessButton={renderViewLessButton}
-          isSectioned
         />
       </View>
     );
   };
 
-  const FloatingLabel = (
-    <Text style={rnMultiPickerStyles.floatingLabel}>{placeholder}</Text>
-  );
+  const FloatingLabel = <Text style={styles.floatingLabel}>{placeholder}</Text>;
 
   const DefaultLabel = (
-    <TouchableOpacity
-      onPress={toggleDropdown}
-      style={rnMultiPickerStyles.defaultLabel}
-    >
-      <Text style={rnMultiPickerStyles.defaultLabelText}>{placeholder}</Text>
-      <View style={rnMultiPickerStyles.defaultLabelCrossContainer}>
-        <Image source={ChevronDown} style={rnMultiPickerStyles.chevronDown} />
+    <TouchableOpacity onPress={toggleDropdown} style={styles.defaultLabel}>
+      <Text style={styles.defaultLabelText}>{placeholder}</Text>
+      <View style={styles.defaultLabelCrossContainer}>
+        <Image source={ChevronDown} style={styles.chevronDown} />
       </View>
     </TouchableOpacity>
   );
@@ -120,7 +90,7 @@ export const RNSectionedMultiPicker = ({
   return (
     <>
       {dropDownVisible && (
-        <SectionedOptionsModal
+        <OptionsModal
           onClose={onClose}
           onCheck={onCheck}
           onApply={onApply}
@@ -136,13 +106,11 @@ export const RNSectionedMultiPicker = ({
           renderSaveButton={renderSaveButton}
           modalTitleStyle={modalTitleStyle}
           searchBarPlaceholder={searchBarPlaceholder}
-          onCheckMultiple={onCheckMultiple}
-          onRemoveMultiple={onRemoveMultiple}
         />
       )}
       <TouchableOpacity
         onPress={toggleDropdown}
-        style={[rnMultiPickerStyles.multiSelect, multiSelectStyles, inputStyle]}
+        style={[styles.multiSelect, multiSelectStyles, inputStyle]}
       >
         {renderCheckedItems()}
         {!!checkedDropdownList.length && FloatingLabel}
@@ -151,3 +119,5 @@ export const RNSectionedMultiPicker = ({
     </>
   );
 };
+
+RNMultiSelect.Sectioned = RNSectionedMultiPicker;

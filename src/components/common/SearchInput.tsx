@@ -9,7 +9,8 @@ import {
   type StyleProp,
   type TextStyle,
 } from 'react-native';
-import Cross from '../assets/icons/close.png';
+import Cross from '../../assets/icons/close.png';
+import { Keyboard } from 'react-native';
 
 interface SearchInputProps {
   searchText: string;
@@ -35,7 +36,13 @@ export const SearchInput = ({
         onChangeText={onSearch}
       />
       {searchText ? (
-        <Pressable style={styles.searchCrossContainer} onPress={clearSearch}>
+        <Pressable
+          style={styles.searchCrossContainer}
+          onPress={() => {
+            clearSearch();
+            Keyboard.dismiss();
+          }}
+        >
           <Image source={Cross} style={styles.searchCross} />
         </Pressable>
       ) : null}

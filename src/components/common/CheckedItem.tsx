@@ -1,7 +1,7 @@
 import React from 'react';
 import { Image, Text } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import Cross from '../assets/icons/white-cross.png';
+import Cross from '../../assets/icons/white-cross.png';
 import { Pressable } from 'react-native';
 
 export interface CheckedItemProps {

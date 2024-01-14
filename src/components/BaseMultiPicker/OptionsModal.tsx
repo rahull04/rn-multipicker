@@ -9,12 +9,12 @@ import {
   Platform,
   KeyboardAvoidingView,
 } from 'react-native';
-import Cross from '../assets/icons/close.png';
-import { SearchInput } from './SearchInput';
-import { useSearch } from '../hooks/useSearch';
+import Cross from '../../assets/icons/close.png';
+import { SearchInput } from '../common/SearchInput';
+import { useSearch } from '../../hooks/useSearch';
 import type { OptionsModalProps } from './OptionsModal.type';
-import { DefaultCheckBox } from './DefaultCheckBox';
-import { DefaultFooterButton } from './DefaultFooterButton';
+import { DefaultCheckBox } from '../common/DefaultCheckBox';
+import { DefaultFooterButton } from '../common/DefaultFooterButton';
 import { TouchableOpacity } from 'react-native';
 
 const ALL_ITEMS_CHECKED_TEXT = 'No data available!';

@@ -1,8 +1,8 @@
 import React from 'react';
 import { Image, View } from 'react-native';
 
-import CheckedBox from '../assets/icons/checkedbox.png';
-import UnCheckedBox from '../assets/icons/uncheckedbox.png';
+import CheckedBox from '../../assets/icons/checkedbox.png';
+import UnCheckedBox from '../../assets/icons/uncheckedbox.png';
 import { StyleSheet } from 'react-native';
 
 interface RadioProps {

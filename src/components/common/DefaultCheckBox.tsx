@@ -1,7 +1,8 @@
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { Image, StyleSheet, Text, Pressable } from 'react-native';
 import { CheckBox } from './CheckBox';
 import React from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
+import ChevronDown from '../../assets/icons/chevron-down.png';
 
 interface DefaultCheckBoxProps {
   onCheck: () => void;
@@ -11,6 +12,7 @@ interface DefaultCheckBoxProps {
   titleStyle?: StyleProp<TextStyle>;
   containerStyle?: StyleProp<ViewStyle>;
   tintColor?: string;
+  showChevron?: boolean;
 }
 
 export const DefaultCheckBox = ({
@@ -21,10 +23,18 @@ export const DefaultCheckBox = ({
   titleStyle,
   containerStyle,
   tintColor,
+  showChevron,
 }: DefaultCheckBoxProps) => (
-  <TouchableOpacity
-    onPress={onCheck}
-    style={[styles.checkboxContainer, containerStyle]}
+  <Pressable
+    onPressIn={onCheck}
+    onStartShouldSetResponder={() => true}
+    onTouchEnd={(e) => e.stopPropagation()}
+    style={({ pressed }) => [
+      styles.checkboxContainer,
+      containerStyle,
+      { opacity: pressed ? 0.2 : 1 },
+      showChevron && { borderBottomWidth: 1, borderBottomColor: '#e6e6e6' },
+    ]}
   >
     <CheckBox active={active} size={size} tintColor={tintColor} />
     <Text
@@ -34,7 +44,12 @@ export const DefaultCheckBox = ({
     >
       {item}
     </Text>
-  </TouchableOpacity>
+    {showChevron ? (
+      <Pressable>
+        <Image source={ChevronDown} style={styles.chevronDown} />
+      </Pressable>
+    ) : null}
+  </Pressable>
 );
 
 const styles = StyleSheet.create({
@@ -48,7 +63,14 @@ const styles = StyleSheet.create({
   },
   label: {
     margin: 8,
-    fontSize: 16,
-    width: '90%',
+    fontSize: 14,
+    width: '82%',
+  },
+  chevronDown: {
+    width: 18,
+    height: 18,
+    zIndex: 1111,
+    tintColor: '#00264d',
+    marginBottom: 2,
   },
 });

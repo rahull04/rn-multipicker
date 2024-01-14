@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import type {
   SectionedMultiSelectData,
   SectionedSelectedItems,
-} from '../components/RNMultiPicker.type';
+} from '../components/BaseMultiPicker/RNMultiPicker.type';
 
 export const useSectionedMultiPickerItems = (
   selectedItems: SectionedSelectedItems[],
