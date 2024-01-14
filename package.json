@@ -35,9 +35,10 @@
     "release": "release-it"
   },
   "keywords": [
-    "react-native",
-    "ios",
-    "android"
+    "reactnative",
+    "multi-select",
+    "multiselect",
+    "react-native"
   ],
   "repository": {
     "type": "git",
