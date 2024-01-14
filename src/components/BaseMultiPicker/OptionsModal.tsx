@@ -189,15 +189,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 12,
-    marginRight: 6,
+    marginRight: 8,
   },
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
   },
   cross: {
-    width: 16,
-    height: 16,
+    width: 19,
+    height: 19,
   },
   scrollViewContent: {
     paddingVertical: 8,
