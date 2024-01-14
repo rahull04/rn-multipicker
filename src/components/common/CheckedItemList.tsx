@@ -10,16 +10,29 @@ interface CheckedListProps {
   maxCheckedItemsVisible: number;
   renderCheckedItem?: (
     value: string | SectionedSelectedItems,
+    onRemove: () => void,
     i: number
   ) => JSX.Element;
   renderViewMoreButton?: (
     showAll: () => void,
     remainingCount: number
   ) => JSX.Element;
-  onRemove: (value: string | SectionedSelectedItems[]) => void;
+  onRemove: (value: string | SectionedSelectedItems) => void;
   renderViewLessButton?: (showLess: () => void) => JSX.Element;
   isSectioned?: boolean;
 }
+
+type BaseRenderCheckedItem = (
+  value: string,
+  onRemove: (value: string) => void,
+  i: number
+) => JSX.Element;
+
+type SectionedRenderCheckedItem = (
+  value: SectionedSelectedItems,
+  onRemove: (value: SectionedSelectedItems) => void,
+  i: number
+) => JSX.Element;
 
 export const CheckedItemList = ({
   selectedItems,
@@ -64,14 +77,20 @@ export const CheckedItemList = ({
   };
 
   if (isSectioned) {
+    const sectionRenderCheckedItem =
+      renderCheckedItem as SectionedRenderCheckedItem;
     return (
       <View style={styles.checkedList}>
         {(selectedItems as SectionedSelectedItems[])?.map((value, i) => (
           <View key={`${value.id}-${i}`}>
             {renderViewButton(i)}
-            {renderCheckedItem ? (
+            {sectionRenderCheckedItem ? (
               <View key={`${value}-${i}`}>
-                {renderCheckedItem(value as SectionedSelectedItems, i)}
+                {sectionRenderCheckedItem(
+                  value as SectionedSelectedItems,
+                  () => onRemove(value.id),
+                  i
+                )}
               </View>
             ) : (
               <CheckedItem
@@ -100,13 +119,17 @@ export const CheckedItemList = ({
     );
   }
 
+  const baseRenderCheckedItem = renderCheckedItem as BaseRenderCheckedItem;
+
   return (
     <View style={styles.checkedList}>
       {(selectedItems as string[])?.map((value, i) => (
         <View key={`${value}-${i}`}>
           {renderViewButton(i)}
-          {renderCheckedItem ? (
-            <View key={`${value}-${i}`}>{renderCheckedItem(value, i)}</View>
+          {baseRenderCheckedItem ? (
+            <View key={`${value}-${i}`}>
+              {baseRenderCheckedItem(value, () => onRemove(value), i)}
+            </View>
           ) : (
             <CheckedItem
               key={`${value}-${i}`}

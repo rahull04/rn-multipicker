@@ -44,45 +44,54 @@ const App() {
 }
 ```
 
-## API
+## RNMultiSelect API
 
 ### Properties
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| placeholder | string | --- | Placeholder text for Multi select input |
-|   |   |   |   |
-| data | string[] | --- | Dropdown items to be shown and selected |
-|   |   |   |   |
-| onSelectedItemsChange | (selectedItems: string[]) => void | --- | Callback called when a user selects or de-selects an item, passed |
-|   |   |   |   |
-| selectedItems | string[] | [] | Array of selected items |
-|   |   |   |   |
-| inputStyle | StyleProp<ViewStyle> | --- | Multi select input style |
-|   |   |   |   |
-| renderCheckedItem | (value: string, i: number) => JSX.Element | --- | Render custom CheckedItem on Multi select input |
-|   |   |   |   |
-| renderCheckBox | (value: string, active: boolean, onCheck: (item: string) => void) => JSX.Element | --- | Render custom Checkbox item on Multi select picker modal |
-|   |   |   |   |
-| searchBarStyle | StyleProp<TextStyle> | --- | Search bar style |
-|   |   |   |   |
-| clearButtonStyle | StyleProp<ViewStyle> | --- | Clear button style |
-|   |   |   |   |
-| saveButtonStyle | StyleProp<ViewStyle> | --- | Save button style |
-|   |   |   |   |
-| renderClearButton | (onClearAll: () => void, disabled: boolean) => JSX.Element | --- | Render custom clear button on Multi select picker modal |
-|   |   |   |   |
-| renderSaveButton | (onApply: () => void, disabled: boolean) => JSX.Element | --- | Render custom save button on Multi select picker modal |
-|   |   |   |   |
-| modalTitleStyle | StyleProp<TextStyle> |  | Multi select picker modal header title style |
-|   |   |   |   |
-| searchBarPlaceholder | string | --- | Placeholder text shown on the search input |
-|   |   |   |   |
-| maxCheckedItemsVisible | number | 10 | Maximum number of checked items shown at a time on the multi select input box |
-|   |   |   |   |
-| renderViewMoreButton | (showAll: () => void, remainingCount: number) => JSX.Element | --- | Render custom View More button |
-|   |   |   |   |
-| renderViewLessButton | (showLess: () => void) => JSX.Element | --- | Render custom View More button |
+| Prop                  | Type                                               | Description                                                  |
+|-----------------------|----------------------------------------------------|--------------------------------------------------------------|
+| `placeholder`         | `string`                                           | Placeholder text displayed in the multi-select input field.  |
+| `data`                | `string[]`                                         | Array of strings representing selectable items.              |
+| `onSelectedItemsChange` | `(selectedItems: string[]) => void`               | Callback triggered when selected items change.               |
+| `selectedItems`       | `string[]`                                         | Array of strings representing currently selected items.      |
+| `styles` (deprecated) | `StyleProp<ViewStyle>`                             | Deprecated: Use `inputStyle` instead.                         |
+| `renderCheckedItem`   | `(value: string, i: number) => JSX.Element`        | Custom renderer for checked items.                            |
+| `renderCheckBox`      | `(value: string, active: boolean, onCheck: (item: string) => void) => JSX.Element` | Custom renderer for checkboxes.     |
+| `searchBarStyle`      | `StyleProp<TextStyle>`                             | Styling for the search bar.                                   |
+| `clearButtonStyle`    | `StyleProp<ViewStyle>`                             | Styling for the clear button.                                 |
+| `saveButtonStyle`     | `StyleProp<ViewStyle>`                             | Styling for the save button.                                  |
+| `renderClearButton`   | `(onClearAll: () => void, disabled: boolean) => JSX.Element` | Custom renderer for the clear button. |
+| `renderSaveButton`    | `(onApply: () => void, disabled: boolean) => JSX.Element` | Custom renderer for the save button. |
+| `modalTitleStyle`     | `StyleProp<TextStyle>`                             | Styling for the picker modal title.                           |
+| `searchBarPlaceholder`| `string`                                           | Placeholder text for the search bar.                         |
+| `inputStyle`          | `StyleProp<ViewStyle>`                             | Styling for the input field.                                  |
+| `maxCheckedItemsVisible` | `number`                                        | Maximum number of checked items visible in the selection.    |
+| `renderViewMoreButton`| `(showAll: () => void, remainingCount: number) => JSX.Element` | Custom renderer for "View More" button.  |
+| `renderViewLessButton`| `(showLess: () => void) => JSX.Element`           | Custom renderer for "View Less" button.                      |
+
+
+## RNMultiSelect.Sectioned API
+
+| Prop                  | Type                                               | Description                                                  |
+|-----------------------|----------------------------------------------------|--------------------------------------------------------------|
+| `data`                | `SectionedMultiSelectData[]`                       | Array of data representing sectioned items in the multi-picker.|
+| `selectedItems`       | `SectionedSelectedItems[]`                         | Array of selected items with section information.             |
+| `onSelectedItemsChange` | `(selectedItems: SectionedSelectedItems[]) => void` | Callback triggered when selected items change.               |
+| `renderCheckedItem`   | `(value: SectionedSelectedItems, onRemove: () => void, i: number) => JSX.Element` | Custom renderer for checked items in the picker.   |
+| `renderCheckBox`      | `(value: SectionedSelectedItems, active: boolean, onCheck: (item: SectionedSelectedItems) => void) => JSX.Element` | Custom renderer for checkboxes in the picker. |
+| `placeholder`         | `string`                                           | Placeholder text displayed in the multi-select input field.  |
+| `styles` (deprecated) | `StyleProp<ViewStyle>`                             | Deprecated: Use `inputStyle` instead.                         |
+| `searchBarStyle`      | `StyleProp<TextStyle>`                             | Styling for the search bar.                                   |
+| `clearButtonStyle`    | `StyleProp<ViewStyle>`                             | Styling for the clear button.                                 |
+| `saveButtonStyle`     | `StyleProp<ViewStyle>`                             | Styling for the save button.                                  |
+| `renderClearButton`   | `(onClearAll: () => void, disabled: boolean) => JSX.Element` | Custom renderer for the clear button. |
+| `renderSaveButton`    | `(onApply: () => void, disabled: boolean) => JSX.Element` | Custom renderer for the save button. |
+| `modalTitleStyle`     | `StyleProp<TextStyle>`                             | Styling for the picker modal title.                           |
+| `searchBarPlaceholder`| `string`                                           | Placeholder text for the search bar.                         |
+| `inputStyle`          | `StyleProp<ViewStyle>`                             | Styling for the input field.                                  |
+| `maxCheckedItemsVisible` | `number`                                        | Maximum number of checked items visible in the selection.    |
+| `renderViewMoreButton`| `(showAll: () => void, remainingCount: number) => JSX.Element` | Custom renderer for "View More" button.  |
+| `renderViewLessButton`| `(showLess: () => void) => JSX.Element`           | Custom renderer for "View Less" button.                      |
 
 
 ## Contributing

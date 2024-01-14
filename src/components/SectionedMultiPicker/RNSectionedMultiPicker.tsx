@@ -23,10 +23,19 @@ type OmmitedSectionedPickerProps = Omit<
 
 export interface RNSectionedMultiPickerProps
   extends OmmitedSectionedPickerProps {
+  /** (SectionedMultiSelectData[]): An array of data representing the sectioned items in the multi-picker. */
   data: SectionedMultiSelectData[];
+  /** SectionedSelectedItems[]): An array of selected items with section information. */
   selectedItems: SectionedSelectedItems[];
+  /** ((selectedItems: SectionedSelectedItems[]) => void): Callback function triggered when selected items change. */
   onSelectedItemsChange: (selectedItems: SectionedSelectedItems[]) => void;
-  renderCheckedItem?: (value: SectionedSelectedItems, i: number) => JSX.Element;
+  /** ((value: SectionedSelectedItems, onRemove: () => void, i: number) => JSX.Element): Custom renderer for checked items in the picker. */
+  renderCheckedItem?: (
+    value: SectionedSelectedItems,
+    onRemove: () => void,
+    i: number
+  ) => JSX.Element;
+  /** ((value: SectionedSelectedItems, active: boolean, onCheck: (item: SectionedSelectedItems) => void) => JSX.Element): Custom renderer for checkboxes in the picker. */
   renderCheckBox?: (
     value: SectionedSelectedItems,
     active: boolean,
