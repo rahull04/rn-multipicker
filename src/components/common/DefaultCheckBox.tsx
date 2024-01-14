@@ -13,6 +13,7 @@ interface DefaultCheckBoxProps {
   containerStyle?: StyleProp<ViewStyle>;
   tintColor?: string;
   showChevron?: boolean;
+  titleNumberOfLines?: number;
 }
 
 export const DefaultCheckBox = ({
@@ -24,6 +25,7 @@ export const DefaultCheckBox = ({
   containerStyle,
   tintColor,
   showChevron,
+  titleNumberOfLines = 2,
 }: DefaultCheckBoxProps) => (
   <Pressable
     onPressIn={onCheck}
@@ -38,7 +40,7 @@ export const DefaultCheckBox = ({
   >
     <CheckBox active={active} size={size} tintColor={tintColor} />
     <Text
-      numberOfLines={2}
+      numberOfLines={titleNumberOfLines}
       ellipsizeMode="tail"
       style={[styles.label, titleStyle]}
     >

@@ -125,6 +125,7 @@ export const SectionedOptionsModal = ({
                   }}
                   active={true}
                   titleStyle={styles.title}
+                  titleNumberOfLines={1}
                 />
                 {item.data.map((value) => (
                   <SectionedDropdownItem
