@@ -51,33 +51,22 @@ export const CheckedItemList = ({
   const [showAllCheckedItems, setShowAllCheckedItems] = useState(false);
   const showViewCheckedButton = checkedListCount > maxCheckedItemsVisible;
 
-  const renderViewButton = (i: number) => {
-    const showViewMoreBtn =
-      i + 1 === maxCheckedItemsVisible + 1 && !showAllCheckedItems;
-    const exceedsMaxCheckedItemsPossible =
-      i + 1 > maxCheckedItemsVisible && !showAllCheckedItems;
+  const renderViewButton = () => {
     const remainingCount = checkedListCount - maxCheckedItemsVisible;
 
-    if (showViewMoreBtn) {
-      // Display custom button if prop present
-      if (renderViewMoreButton) {
-        return renderViewMoreButton(
-          () => setShowAllCheckedItems(true),
-          remainingCount
-        );
-      }
-      return (
-        <ViewButton
-          key="view_more"
-          onPress={() => setShowAllCheckedItems((val) => !val)}
-          remainingCount={remainingCount}
-        />
+    if (renderViewMoreButton) {
+      return renderViewMoreButton(
+        () => setShowAllCheckedItems(true),
+        remainingCount
       );
     }
-    if (exceedsMaxCheckedItemsPossible) {
-      return null;
-    }
-    return <></>;
+    return (
+      <ViewButton
+        key="view_more"
+        onPress={() => setShowAllCheckedItems((val) => !val)}
+        remainingCount={remainingCount}
+      />
+    );
   };
 
   if (isSectioned) {
@@ -85,29 +74,42 @@ export const CheckedItemList = ({
       renderCheckedItem as SectionedRenderCheckedItem;
     return (
       <View style={styles.checkedList}>
-        {(selectedItems as SectionedSelectedItems[])?.map((value, i) => (
-          <View key={`${value.id}-${i}`}>
-            {renderViewButton(i)}
-            {sectionRenderCheckedItem ? (
-              <View key={`${value}-${i}`}>
-                {sectionRenderCheckedItem(
-                  value as SectionedSelectedItems,
-                  () => onRemove(value.id),
-                  i
-                )}
-              </View>
-            ) : (
-              <CheckedItem
-                key={`${value}-${i}`}
-                title={value.value}
-                onRemove={onRemove}
-                id={value.id}
-                color={checkedItemsColor}
-                contentColor={checkedItemsContentColor}
-              />
-            )}
-          </View>
-        ))}
+        {(selectedItems as SectionedSelectedItems[])?.map((value, i) => {
+          const showViewMoreBtn =
+            i + 1 === maxCheckedItemsVisible + 1 && !showAllCheckedItems;
+          const exceedsMaxCheckedItemsPossible =
+            i + 1 > maxCheckedItemsVisible && !showAllCheckedItems;
+
+          if (showViewMoreBtn) {
+            return renderViewButton();
+          }
+
+          if (exceedsMaxCheckedItemsPossible) {
+            return null;
+          }
+          return (
+            <View key={`${value.id}-${i}`}>
+              {sectionRenderCheckedItem ? (
+                <View key={`${value}-${i}`}>
+                  {sectionRenderCheckedItem(
+                    value as SectionedSelectedItems,
+                    () => onRemove(value.id),
+                    i
+                  )}
+                </View>
+              ) : (
+                <CheckedItem
+                  key={`${value}-${i}`}
+                  title={value.value}
+                  onRemove={onRemove}
+                  id={value.id}
+                  color={checkedItemsColor}
+                  contentColor={checkedItemsContentColor}
+                />
+              )}
+            </View>
+          );
+        })}
         {showViewCheckedButton && showAllCheckedItems ? (
           <>
             {renderViewLessButton ? (
@@ -129,24 +131,38 @@ export const CheckedItemList = ({
 
   return (
     <View style={styles.checkedList}>
-      {(selectedItems as string[])?.map((value, i) => (
-        <View key={`${value}-${i}`}>
-          {renderViewButton(i)}
-          {baseRenderCheckedItem ? (
-            <View key={`${value}-${i}`}>
-              {baseRenderCheckedItem(value, () => onRemove(value), i)}
-            </View>
-          ) : (
-            <CheckedItem
-              key={`${value}-${i}`}
-              title={value}
-              onRemove={onRemove}
-              color={checkedItemsColor}
-              contentColor={checkedItemsContentColor}
-            />
-          )}
-        </View>
-      ))}
+      {(selectedItems as string[])?.map((value, i) => {
+        const showViewMoreBtn =
+          i + 1 === maxCheckedItemsVisible + 1 && !showAllCheckedItems;
+        const exceedsMaxCheckedItemsPossible =
+          i + 1 > maxCheckedItemsVisible && !showAllCheckedItems;
+
+        if (showViewMoreBtn) {
+          return renderViewButton();
+        }
+
+        if (exceedsMaxCheckedItemsPossible) {
+          return null;
+        }
+
+        return (
+          <View key={`${value}-${i}`}>
+            {baseRenderCheckedItem ? (
+              <View key={`${value}-${i}`}>
+                {baseRenderCheckedItem(value, () => onRemove(value), i)}
+              </View>
+            ) : (
+              <CheckedItem
+                key={`${value}-${i}`}
+                title={value}
+                onRemove={onRemove}
+                color={checkedItemsColor}
+                contentColor={checkedItemsContentColor}
+              />
+            )}
+          </View>
+        );
+      })}
       {showViewCheckedButton && showAllCheckedItems ? (
         <>
           {renderViewLessButton ? (
