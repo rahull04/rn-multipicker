@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   Image,
   StyleSheet,
@@ -18,6 +18,7 @@ import type { OptionsModalProps } from '../BaseMultiPicker/OptionsModal.type';
 import { DefaultCheckBox } from '../common/DefaultCheckBox';
 import { DefaultFooterButton } from '../common/DefaultFooterButton';
 import type {
+  CustomSelectedSectionHeaderData,
   SectionedMultiSelectData,
   SectionedSelectedItems,
 } from '../BaseMultiPicker/RNMultiPicker.type';
@@ -44,6 +45,16 @@ interface SectionedOptionsModalProps extends OmmitedSectionedOptionsModalProps {
   ) => JSX.Element;
   onCheckMultiple: (items: SectionedSelectedItems[]) => void;
   onRemoveMultiple: (items: SectionedSelectedItems[]) => void;
+  renderSelectedSectionHeader?: (
+    value: CustomSelectedSectionHeaderData,
+    active: boolean,
+    onCheck: (item: SectionedSelectedItems) => void
+  ) => JSX.Element;
+  renderNotSelectedSectionHeader?: (
+    value: CustomSelectedSectionHeaderData,
+    active: boolean,
+    onCheck: (item: SectionedSelectedItems) => void
+  ) => JSX.Element;
 }
 
 export const SectionedOptionsModal = ({
@@ -64,6 +75,8 @@ export const SectionedOptionsModal = ({
   searchBarPlaceholder,
   onCheckMultiple,
   onRemoveMultiple,
+  renderSelectedSectionHeader,
+  renderNotSelectedSectionHeader,
 }: SectionedOptionsModalProps) => {
   const { searchText, onSearch, clearSearch } = useSearch();
   const [initialCheckedList] = React.useState(checkedList);
@@ -93,6 +106,28 @@ export const SectionedOptionsModal = ({
     initialCheckedList.sort().toString() === checkedList.sort().toString();
   const areAllItemsChecked = totalItems === checkedList.length;
 
+  const onSelectedSectionHeaderCheck = useCallback(
+    (item: SectionedMultiSelectData) => {
+      const remainingItems = item.data.map((val) => ({
+        ...val,
+        title: item.title,
+      }));
+      onRemoveMultiple([...remainingItems]);
+    },
+    [onRemoveMultiple]
+  );
+
+  const onNotSelectedSectionHeaderCheck = useCallback(
+    (item: SectionedMultiSelectData) => {
+      const remainingItems = item.data.map((val) => ({
+        ...val,
+        title: item.title,
+      }));
+      onCheckMultiple([...checkedList, ...remainingItems]);
+    },
+    [checkedList, onCheckMultiple]
+  );
+
   const SelectedSection = (
     <>
       {checkedList.length ? (
@@ -114,19 +149,24 @@ export const SectionedOptionsModal = ({
         ? checkedDropDownList?.map((item, i) => {
             return (
               <View key={`${item.title}-${i}`}>
-                <DefaultCheckBox
-                  item={item.title}
-                  onCheck={() => {
-                    const remainingItems = item.data.map((val) => ({
-                      ...val,
+                {renderSelectedSectionHeader ? (
+                  renderSelectedSectionHeader(
+                    {
                       title: item.title,
-                    }));
-                    onRemoveMultiple([...remainingItems]);
-                  }}
-                  active={true}
-                  titleStyle={styles.title}
-                  titleNumberOfLines={1}
-                />
+                      data: item.data,
+                    },
+                    true,
+                    () => onSelectedSectionHeaderCheck(item)
+                  )
+                ) : (
+                  <DefaultCheckBox
+                    item={item.title}
+                    onCheck={() => onSelectedSectionHeaderCheck(item)}
+                    active={true}
+                    titleStyle={styles.title}
+                    titleNumberOfLines={1}
+                  />
+                )}
                 {item.data.map((value) => (
                   <SectionedDropdownItem
                     key={`${value.id}-${i}`}
@@ -248,21 +288,26 @@ export const SectionedOptionsModal = ({
                 ? dropDownList?.map((item, i) => {
                     return (
                       <View key={`item-${item.title}-${i}`}>
-                        <DefaultCheckBox
-                          item={item.title}
-                          onCheck={() => {
-                            const remainingItems = item.data.map((val) => ({
-                              ...val,
+                        {renderNotSelectedSectionHeader ? (
+                          renderNotSelectedSectionHeader(
+                            {
                               title: item.title,
-                            }));
-                            onCheckMultiple([
-                              ...checkedList,
-                              ...remainingItems,
-                            ]);
-                          }}
-                          active={false}
-                          titleStyle={styles.title}
-                        />
+                              data: item.data,
+                            },
+                            true,
+                            () => onNotSelectedSectionHeaderCheck(item)
+                          )
+                        ) : (
+                          <DefaultCheckBox
+                            item={item.title}
+                            onCheck={() =>
+                              onNotSelectedSectionHeaderCheck(item)
+                            }
+                            active={false}
+                            titleStyle={styles.title}
+                          />
+                        )}
+
                         {item.data.map((value) => (
                           <SectionedDropdownItem
                             key={`${value.id}-${i}`}

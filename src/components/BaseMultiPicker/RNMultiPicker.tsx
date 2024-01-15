@@ -29,6 +29,8 @@ export const RNMultiSelect = ({
   maxCheckedItemsVisible = MAX_CHECKED_ITEMS_VISIBLE,
   renderViewMoreButton,
   renderViewLessButton,
+  checkedItemsColor,
+  checkedItemsContentColor,
 }: RNMultiSelectProps) => {
   const [dropDownVisible, setDropDownVisible] = useState(false);
 
@@ -71,6 +73,8 @@ export const RNMultiSelect = ({
           /* @ts-ignore */
           onRemove={onRemove}
           renderViewLessButton={renderViewLessButton}
+          checkedItemsColor={checkedItemsColor}
+          checkedItemsContentColor={checkedItemsContentColor}
         />
       </View>
     );

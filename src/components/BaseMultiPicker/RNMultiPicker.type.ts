@@ -14,6 +14,11 @@ export interface SectionedSelectedItems {
   value: string;
 }
 
+export interface CustomSelectedSectionHeaderData {
+  title: string;
+  data: SectionedMultiSelectData['data'];
+}
+
 export interface RNMultiSelectProps {
   /** (string): Placeholder text displayed in the multi-select input field. */
   placeholder: string;
@@ -63,4 +68,8 @@ export interface RNMultiSelectProps {
   ) => JSX.Element;
   /**   ((showLess: () => void) => JSX.Element): Custom renderer for the "View Less" button on the input. */
   renderViewLessButton?: (showLess: () => void) => JSX.Element;
+  /**  (sring): Change the background color of the checked items visible on the input box. */
+  checkedItemsColor?: string;
+  /**  (sring): Change the color of the title and cross icon on the the checked items visible on the input box. */
+  checkedItemsContentColor?: string;
 }

@@ -20,6 +20,8 @@ interface CheckedListProps {
   onRemove: (value: string | SectionedSelectedItems) => void;
   renderViewLessButton?: (showLess: () => void) => JSX.Element;
   isSectioned?: boolean;
+  checkedItemsColor?: string;
+  checkedItemsContentColor?: string;
 }
 
 type BaseRenderCheckedItem = (
@@ -43,6 +45,8 @@ export const CheckedItemList = ({
   onRemove,
   renderViewLessButton,
   isSectioned,
+  checkedItemsColor,
+  checkedItemsContentColor,
 }: CheckedListProps) => {
   const [showAllCheckedItems, setShowAllCheckedItems] = useState(false);
   const showViewCheckedButton = checkedListCount > maxCheckedItemsVisible;
@@ -98,6 +102,8 @@ export const CheckedItemList = ({
                 title={value.value}
                 onRemove={onRemove}
                 id={value.id}
+                color={checkedItemsColor}
+                contentColor={checkedItemsContentColor}
               />
             )}
           </View>
@@ -135,6 +141,8 @@ export const CheckedItemList = ({
               key={`${value}-${i}`}
               title={value}
               onRemove={onRemove}
+              color={checkedItemsColor}
+              contentColor={checkedItemsContentColor}
             />
           )}
         </View>

@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
 import type {
+  CustomSelectedSectionHeaderData,
   RNMultiSelectProps,
   SectionedMultiSelectData,
   SectionedSelectedItems,
@@ -41,6 +42,18 @@ export interface RNSectionedMultiPickerProps
     active: boolean,
     onCheck: (item: SectionedSelectedItems) => void
   ) => JSX.Element;
+  /** Custom renderer for Section title headers in the Selected items. */
+  renderSelectedSectionHeader?: (
+    value: CustomSelectedSectionHeaderData,
+    active: boolean,
+    onCheck: (item: SectionedSelectedItems) => void
+  ) => JSX.Element;
+  /** Custom renderer for Section title headers in the Not Selected items. */
+  renderNotSelectedSectionHeader?: (
+    value: CustomSelectedSectionHeaderData,
+    active: boolean,
+    onCheck: (item: SectionedSelectedItems) => void
+  ) => JSX.Element;
 }
 
 export const RNSectionedMultiPicker = ({
@@ -62,6 +75,10 @@ export const RNSectionedMultiPicker = ({
   maxCheckedItemsVisible = MAX_CHECKED_ITEMS_VISIBLE,
   renderViewMoreButton,
   renderViewLessButton,
+  checkedItemsColor,
+  checkedItemsContentColor,
+  renderSelectedSectionHeader,
+  renderNotSelectedSectionHeader,
 }: RNSectionedMultiPickerProps) => {
   const [dropDownVisible, setDropDownVisible] = useState(false);
   const {
@@ -105,6 +122,8 @@ export const RNSectionedMultiPicker = ({
           onRemove={onRemove}
           renderViewLessButton={renderViewLessButton}
           isSectioned
+          checkedItemsColor={checkedItemsColor}
+          checkedItemsContentColor={checkedItemsContentColor}
         />
       </View>
     );
@@ -147,6 +166,8 @@ export const RNSectionedMultiPicker = ({
           searchBarPlaceholder={searchBarPlaceholder}
           onCheckMultiple={onCheckMultiple}
           onRemoveMultiple={onRemoveMultiple}
+          renderSelectedSectionHeader={renderSelectedSectionHeader}
+          renderNotSelectedSectionHeader={renderNotSelectedSectionHeader}
         />
       )}
       <TouchableOpacity

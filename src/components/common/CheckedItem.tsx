@@ -8,19 +8,43 @@ export interface CheckedItemProps {
   title: string;
   onRemove: (value: string) => void;
   id?: string;
+  color?: string;
+  contentColor?: string;
 }
 
-export const CheckedItem = ({ title, onRemove, id }: CheckedItemProps) => {
+export const CheckedItem = ({
+  title,
+  onRemove,
+  id,
+  color,
+  contentColor,
+}: CheckedItemProps) => {
   return (
     <Pressable
-      style={styles.checkedItem}
+      style={[
+        styles.checkedItem,
+        color ? { backgroundColor: color } : undefined,
+      ]}
       onStartShouldSetResponder={() => true}
       onTouchEnd={(e) => e.stopPropagation()}
       onPress={() => onRemove(id ?? title)}
     >
-      <Text style={styles.title}>{title}</Text>
+      <Text
+        style={[
+          styles.title,
+          contentColor ? { color: contentColor } : undefined,
+        ]}
+      >
+        {title}
+      </Text>
       <View style={styles.crossContainer}>
-        <Image source={Cross} style={styles.cross} />
+        <Image
+          source={Cross}
+          style={[
+            styles.cross,
+            contentColor ? { tintColor: contentColor } : undefined,
+          ]}
+        />
       </View>
     </Pressable>
   );
