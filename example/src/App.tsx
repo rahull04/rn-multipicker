@@ -2,29 +2,7 @@ import * as React from 'react';
 
 import { StyleSheet, View } from 'react-native';
 import { RNMultiSelect, type SectionedSelectedItems } from 'rn-multipicker';
-import { COUNTRIES } from './constants';
-
-const SECTIONED_COUNTRIES = [
-  {
-    id: '1',
-    title: 'Asia',
-    data: [
-      { value: 'India', id: '1' },
-      { value: 'China', id: '2' },
-      { value: 'Afghanistan', id: '3' },
-    ],
-  },
-  {
-    id: '4',
-    title: 'Europe',
-    data: [
-      { value: 'Spain', id: '5' },
-      { value: 'Sweden', id: '6' },
-      { value: 'France', id: '7' },
-      { value: 'Albania', id: '8' },
-    ],
-  },
-];
+import { COUNTRIES, SECTIONED_COUNTRIES } from './constants';
 
 export default function App() {
   const [selectedItems, setSelectedItems] = React.useState<string[]>([]);

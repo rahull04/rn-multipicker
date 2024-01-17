@@ -54,3 +54,25 @@ export const COUNTRIES = [
   'Costa Rica',
   'Croatia',
 ];
+
+export const SECTIONED_COUNTRIES = [
+  {
+    id: '1',
+    title: 'Asia',
+    data: [
+      { value: 'India', id: '2' },
+      { value: 'China', id: '3' },
+      { value: 'Afghanistan', id: '4' },
+    ],
+  },
+  {
+    id: '5',
+    title: 'Europe',
+    data: [
+      { value: 'Spain', id: '6' },
+      { value: 'Sweden', id: '7' },
+      { value: 'France', id: '8' },
+      { value: 'Albania', id: '9' },
+    ],
+  },
+];
