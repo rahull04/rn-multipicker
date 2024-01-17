@@ -1,6 +1,6 @@
 {
   "name": "rn-multipicker",
-  "version": "0.3.1",
+  "version": "0.3.3",
   "description": "This package will provide features to select and search multiple dropdown items gracefully",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
