@@ -10,6 +10,7 @@ import {
   Platform,
   KeyboardAvoidingView,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import Cross from '../../assets/icons/close.png';
 import { SearchInput } from '../common/SearchInput';
@@ -25,6 +26,7 @@ import type {
 import ChevronDown from '../../assets/icons/chevron-down.png';
 import { useSectionedDropdownList } from '../../hooks/useDropdownList';
 import { SectionedDropdownItem } from './SectionedDropdownItem';
+import { isCloseToBottom } from '../../utils';
 
 const ALL_ITEMS_CHECKED_TEXT = 'No data available!';
 const TRY_CHANGING_SEARCH_TEXT = 'Try changing the search text!';
@@ -77,8 +79,16 @@ export const SectionedOptionsModal = ({
   onRemoveMultiple,
   renderSelectedSectionHeader,
   renderNotSelectedSectionHeader,
+  onSearchTextChange: onSearchExternal,
+  onEndReached,
 }: SectionedOptionsModalProps) => {
-  const { searchText, onSearch, clearSearch } = useSearch();
+  const [showSearchLoader, setShowSearchLoader] = useState(false);
+  const [showRefetchLoader, setShowRefetchLoader] = useState(false);
+  const [fetchIteration, setFetchIteration] = useState(0);
+  const { searchText, onSearch, clearSearch } = useSearch(
+    setShowSearchLoader,
+    onSearchExternal
+  );
   const [initialCheckedList] = React.useState(checkedList);
 
   // Selected and not selected dropdown related states
@@ -259,6 +269,71 @@ export const SectionedOptionsModal = ({
     </View>
   );
 
+  const ContentList = (
+    <KeyboardAvoidingView
+      style={styles.keyboardAvoidingView}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 70}
+    >
+      <ScrollView
+        contentContainerStyle={styles.scrollViewContent}
+        onScroll={({ nativeEvent }) => {
+          // Call user defined callback function
+          if (isCloseToBottom(nativeEvent) && onEndReached) {
+            const newIteration = fetchIteration + 1;
+            setFetchIteration(newIteration);
+            onEndReached(newIteration, (val: boolean) => {
+              setShowRefetchLoader(val);
+            });
+          }
+        }}
+        scrollEventThrottle={400}
+      >
+        {SelectedSection}
+        {NotSelectedHeaderSection}
+        {notSelectedDropdownVisible
+          ? dropDownList?.map((item, i) => {
+              return (
+                <View key={`item-${item.title}-${i}`}>
+                  {renderNotSelectedSectionHeader ? (
+                    renderNotSelectedSectionHeader(
+                      {
+                        title: item.title,
+                        data: item.data,
+                      },
+                      true,
+                      () => onNotSelectedSectionHeaderCheck(item)
+                    )
+                  ) : (
+                    <DefaultCheckBox
+                      item={item.title}
+                      onCheck={() => onNotSelectedSectionHeaderCheck(item)}
+                      active={false}
+                      titleStyle={styles.title}
+                    />
+                  )}
+
+                  {item.data.map((value) => (
+                    <SectionedDropdownItem
+                      key={`${value.id}-${i}`}
+                      value={value}
+                      onCheck={onCheck}
+                      checkedList={checkedList}
+                      title={item.title}
+                      renderCheckBox={renderCheckBox}
+                    />
+                  ))}
+                </View>
+              );
+            })
+          : null}
+        {showRefetchLoader ? (
+          <ActivityIndicator style={styles.searchLoader} size={'large'} />
+        ) : null}
+      </ScrollView>
+    </KeyboardAvoidingView>
+  );
+
   return (
     <Modal animationType="slide" visible={true}>
       <View style={styles.mainContainer}>
@@ -276,54 +351,11 @@ export const SectionedOptionsModal = ({
             onSearch={onSearch}
             clearSearch={clearSearch}
           />
-          <KeyboardAvoidingView
-            style={styles.keyboardAvoidingView}
-            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-            keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 70}
-          >
-            <ScrollView contentContainerStyle={styles.scrollViewContent}>
-              {SelectedSection}
-              {NotSelectedHeaderSection}
-              {notSelectedDropdownVisible
-                ? dropDownList?.map((item, i) => {
-                    return (
-                      <View key={`item-${item.title}-${i}`}>
-                        {renderNotSelectedSectionHeader ? (
-                          renderNotSelectedSectionHeader(
-                            {
-                              title: item.title,
-                              data: item.data,
-                            },
-                            true,
-                            () => onNotSelectedSectionHeaderCheck(item)
-                          )
-                        ) : (
-                          <DefaultCheckBox
-                            item={item.title}
-                            onCheck={() =>
-                              onNotSelectedSectionHeaderCheck(item)
-                            }
-                            active={false}
-                            titleStyle={styles.title}
-                          />
-                        )}
-
-                        {item.data.map((value) => (
-                          <SectionedDropdownItem
-                            key={`${value.id}-${i}`}
-                            value={value}
-                            onCheck={onCheck}
-                            checkedList={checkedList}
-                            title={item.title}
-                            renderCheckBox={renderCheckBox}
-                          />
-                        ))}
-                      </View>
-                    );
-                  })
-                : null}
-            </ScrollView>
-          </KeyboardAvoidingView>
+          {showSearchLoader ? (
+            <ActivityIndicator style={styles.searchLoader} size={'large'} />
+          ) : (
+            ContentList
+          )}
         </View>
         {Footer}
       </View>
@@ -411,4 +443,7 @@ const styles = StyleSheet.create({
     paddingLeft: 8,
   },
   keyboardAvoidingView: { flex: 1 },
+  searchLoader: {
+    marginTop: 20,
+  },
 });

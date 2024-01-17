@@ -72,4 +72,14 @@ export interface RNMultiSelectProps {
   checkedItemsColor?: string;
   /**  (sring): Change the color of the title and cross icon on the the checked items visible on the input box. */
   checkedItemsContentColor?: string;
+  /**  ((searchText: string, setLoader: (value: boolean) => void) => void;): Callback function triggered when user enters search value. */
+  onSearchTextChange?: (
+    searchText: string,
+    setLoader: (value: boolean) => void
+  ) => void;
+  /**  (StyleProp<ViewStyle>): Callback function triggered when user scrolls to the last item in the not selected list. */
+  onEndReached?: (
+    iteration: number,
+    setLoader: (value: boolean) => void
+  ) => void;
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Image,
   StyleSheet,
@@ -16,6 +16,8 @@ import type { OptionsModalProps } from './OptionsModal.type';
 import { DefaultCheckBox } from '../common/DefaultCheckBox';
 import { DefaultFooterButton } from '../common/DefaultFooterButton';
 import { TouchableOpacity } from 'react-native';
+import { ActivityIndicator } from 'react-native';
+import { isCloseToBottom } from '../../utils';
 
 const ALL_ITEMS_CHECKED_TEXT = 'No data available!';
 const TRY_CHANGING_SEARCH_TEXT = 'Try changing the search text!';
@@ -36,8 +38,16 @@ export const OptionsModal = ({
   renderSaveButton,
   modalTitleStyle,
   searchBarPlaceholder,
+  onSearchTextChange: onSearchExternal,
+  onEndReached,
 }: OptionsModalProps) => {
-  const { searchText, onSearch, clearSearch } = useSearch();
+  const [showSearchLoader, setShowSearchLoader] = useState(false);
+  const [showRefetchLoader, setShowRefetchLoader] = useState(false);
+  const [fetchIteration, setFetchIteration] = useState(0);
+  const { searchText, onSearch, clearSearch } = useSearch(
+    setShowSearchLoader,
+    onSearchExternal
+  );
   const [initialCheckedList] = React.useState(checkedList);
   const dropDownList = data.filter(
     (item) =>
@@ -121,6 +131,49 @@ export const OptionsModal = ({
     </View>
   );
 
+  const ContentList = (
+    <KeyboardAvoidingView
+      style={styles.keyboardAvoidingView}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 70}
+    >
+      <ScrollView
+        contentContainerStyle={styles.scrollViewContent}
+        onScroll={({ nativeEvent }) => {
+          // Call user defined callback function
+          if (isCloseToBottom(nativeEvent) && onEndReached) {
+            const newIteration = fetchIteration + 1;
+            setFetchIteration(newIteration);
+            onEndReached(newIteration, (val: boolean) => {
+              setShowRefetchLoader(val);
+            });
+          }
+        }}
+        scrollEventThrottle={400}
+      >
+        {SelectedSection}
+        {NotSelectedHeaderSection}
+        {dropDownList?.map((item) =>
+          renderCheckBox ? (
+            <View key={`unchecked-${item}`}>
+              {renderCheckBox(item, checkedList.includes(item), onCheck)}
+            </View>
+          ) : (
+            <DefaultCheckBox
+              item={item}
+              key={`unchecked-${item}`}
+              onCheck={() => onCheck(item)}
+              active={checkedList.includes(item)}
+            />
+          )
+        )}
+        {showRefetchLoader ? (
+          <ActivityIndicator style={styles.searchLoader} size={'large'} />
+        ) : null}
+      </ScrollView>
+    </KeyboardAvoidingView>
+  );
+
   return (
     <Modal animationType="slide" visible={true}>
       <View style={styles.mainContainer}>
@@ -138,30 +191,11 @@ export const OptionsModal = ({
             onSearch={onSearch}
             clearSearch={clearSearch}
           />
-          <KeyboardAvoidingView
-            style={styles.keyboardAvoidingView}
-            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-            keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 70}
-          >
-            <ScrollView contentContainerStyle={styles.scrollViewContent}>
-              {SelectedSection}
-              {NotSelectedHeaderSection}
-              {dropDownList?.map((item) =>
-                renderCheckBox ? (
-                  <View key={`unchecked-${item}`}>
-                    {renderCheckBox(item, checkedList.includes(item), onCheck)}
-                  </View>
-                ) : (
-                  <DefaultCheckBox
-                    item={item}
-                    key={`unchecked-${item}`}
-                    onCheck={() => onCheck(item)}
-                    active={checkedList.includes(item)}
-                  />
-                )
-              )}
-            </ScrollView>
-          </KeyboardAvoidingView>
+          {showSearchLoader ? (
+            <ActivityIndicator style={styles.searchLoader} size={'large'} />
+          ) : (
+            ContentList
+          )}
         </View>
         {Footer}
       </View>
@@ -221,4 +255,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   keyboardAvoidingView: { flex: 1 },
+  searchLoader: {
+    marginTop: 20,
+  },
 });

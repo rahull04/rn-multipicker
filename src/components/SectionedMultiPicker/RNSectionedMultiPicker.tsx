@@ -42,13 +42,13 @@ export interface RNSectionedMultiPickerProps
     active: boolean,
     onCheck: (item: SectionedSelectedItems) => void
   ) => JSX.Element;
-  /** Custom renderer for Section title headers in the Selected items. */
+  /** ((value: SectionedSelectedItems, active: boolean, onCheck: (item: SectionedSelectedItems) => void) => JSX.Element): Custom renderer for Section title headers in the Selected items. */
   renderSelectedSectionHeader?: (
     value: CustomSelectedSectionHeaderData,
     active: boolean,
     onCheck: (item: SectionedSelectedItems) => void
   ) => JSX.Element;
-  /** Custom renderer for Section title headers in the Not Selected items. */
+  /** ((value: CustomSelectedSectionHeaderData, active: boolean, onCheck: (item: SectionedSelectedItems) => void) => JSX.Element): Custom renderer for Section title headers in the Not Selected items. */
   renderNotSelectedSectionHeader?: (
     value: CustomSelectedSectionHeaderData,
     active: boolean,

@@ -31,6 +31,8 @@ export const RNMultiSelect = ({
   renderViewLessButton,
   checkedItemsColor,
   checkedItemsContentColor,
+  onSearchTextChange,
+  onEndReached,
 }: RNMultiSelectProps) => {
   const [dropDownVisible, setDropDownVisible] = useState(false);
 
@@ -110,6 +112,8 @@ export const RNMultiSelect = ({
           renderSaveButton={renderSaveButton}
           modalTitleStyle={modalTitleStyle}
           searchBarPlaceholder={searchBarPlaceholder}
+          onSearchTextChange={onSearchTextChange}
+          onEndReached={onEndReached}
         />
       )}
       <TouchableOpacity

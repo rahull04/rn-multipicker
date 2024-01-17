@@ -1,3 +1,4 @@
+import type { NativeScrollEvent } from 'react-native';
 import type { SectionedMultiSelectData } from './components/BaseMultiPicker/RNMultiPicker.type';
 
 export const isSectioned = (data: any): data is SectionedMultiSelectData[] => {
@@ -10,4 +11,16 @@ export const isSectioned = (data: any): data is SectionedMultiSelectData[] => {
     return true;
   }
   return false;
+};
+
+export const isCloseToBottom = ({
+  layoutMeasurement,
+  contentOffset,
+  contentSize,
+}: NativeScrollEvent) => {
+  const paddingToBottom = 20;
+  return (
+    layoutMeasurement.height + contentOffset.y >=
+    contentSize.height - paddingToBottom
+  );
 };
