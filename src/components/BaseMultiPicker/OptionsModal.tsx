@@ -1,20 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Image,
   StyleSheet,
   Text,
-  Pressable,
   ScrollView,
   Modal,
   View,
   Platform,
+  KeyboardAvoidingView,
 } from 'react-native';
-import Cross from '../assets/icons/close.png';
-import { SearchInput } from './SearchInput';
-import { useSearch } from '../hooks/useSearch';
+import Cross from '../../assets/icons/close.png';
+import { SearchInput } from '../common/SearchInput';
+import { useSearch } from '../../hooks/useSearch';
 import type { OptionsModalProps } from './OptionsModal.type';
-import { DefaultCheckBox } from './DefaultCheckBox';
-import { DefaultFooterButton } from './DefaultFooterButton';
+import { DefaultCheckBox } from '../common/DefaultCheckBox';
+import { DefaultFooterButton } from '../common/DefaultFooterButton';
+import { TouchableOpacity } from 'react-native';
+import { ActivityIndicator } from 'react-native';
+import { isCloseToBottom } from '../../utils';
 
 const ALL_ITEMS_CHECKED_TEXT = 'No data available!';
 const TRY_CHANGING_SEARCH_TEXT = 'Try changing the search text!';
@@ -35,8 +38,16 @@ export const OptionsModal = ({
   renderSaveButton,
   modalTitleStyle,
   searchBarPlaceholder,
+  onSearchTextChange: onSearchExternal,
+  onEndReached,
 }: OptionsModalProps) => {
-  const { searchText, onSearch, clearSearch } = useSearch();
+  const [showSearchLoader, setShowSearchLoader] = useState(false);
+  const [showRefetchLoader, setShowRefetchLoader] = useState(false);
+  const [fetchIteration, setFetchIteration] = useState(0);
+  const { searchText, onSearch, clearSearch } = useSearch(
+    setShowSearchLoader,
+    onSearchExternal
+  );
   const [initialCheckedList] = React.useState(checkedList);
   const dropDownList = data.filter(
     (item) =>
@@ -120,14 +131,57 @@ export const OptionsModal = ({
     </View>
   );
 
+  const ContentList = (
+    <KeyboardAvoidingView
+      style={styles.keyboardAvoidingView}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 70}
+    >
+      <ScrollView
+        contentContainerStyle={styles.scrollViewContent}
+        onScroll={({ nativeEvent }) => {
+          // Call user defined callback function
+          if (isCloseToBottom(nativeEvent) && onEndReached) {
+            const newIteration = fetchIteration + 1;
+            setFetchIteration(newIteration);
+            onEndReached(newIteration, (val: boolean) => {
+              setShowRefetchLoader(val);
+            });
+          }
+        }}
+        scrollEventThrottle={400}
+      >
+        {SelectedSection}
+        {NotSelectedHeaderSection}
+        {dropDownList?.map((item) =>
+          renderCheckBox ? (
+            <View key={`unchecked-${item}`}>
+              {renderCheckBox(item, checkedList.includes(item), onCheck)}
+            </View>
+          ) : (
+            <DefaultCheckBox
+              item={item}
+              key={`unchecked-${item}`}
+              onCheck={() => onCheck(item)}
+              active={checkedList.includes(item)}
+            />
+          )
+        )}
+        {showRefetchLoader ? (
+          <ActivityIndicator style={styles.searchLoader} size={'large'} />
+        ) : null}
+      </ScrollView>
+    </KeyboardAvoidingView>
+  );
+
   return (
     <Modal animationType="slide" visible={true}>
       <View style={styles.mainContainer}>
         <View style={styles.headerContainer}>
           <Text style={[styles.headerTitle, modalTitleStyle]}>{title}</Text>
-          <Pressable onPress={onClose}>
+          <TouchableOpacity onPress={onClose}>
             <Image source={Cross} style={styles.cross} />
-          </Pressable>
+          </TouchableOpacity>
         </View>
         <View style={styles.content}>
           <SearchInput
@@ -137,24 +191,11 @@ export const OptionsModal = ({
             onSearch={onSearch}
             clearSearch={clearSearch}
           />
-          <ScrollView contentContainerStyle={styles.scrollViewContent}>
-            {SelectedSection}
-            {NotSelectedHeaderSection}
-            {dropDownList?.map((item) =>
-              renderCheckBox ? (
-                <View key={`unchecked-${item}`}>
-                  {renderCheckBox(item, checkedList.includes(item), onCheck)}
-                </View>
-              ) : (
-                <DefaultCheckBox
-                  item={item}
-                  key={`unchecked-${item}`}
-                  onCheck={() => onCheck(item)}
-                  active={checkedList.includes(item)}
-                />
-              )
-            )}
-          </ScrollView>
+          {showSearchLoader ? (
+            <ActivityIndicator style={styles.searchLoader} size={'large'} />
+          ) : (
+            ContentList
+          )}
         </View>
         {Footer}
       </View>
@@ -182,15 +223,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 12,
-    marginRight: 12,
+    marginRight: 8,
   },
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
   },
   cross: {
-    width: 14,
-    height: 14,
+    width: 19,
+    height: 19,
   },
   scrollViewContent: {
     paddingVertical: 8,
@@ -212,5 +253,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#808080',
     fontSize: 14,
+  },
+  keyboardAvoidingView: { flex: 1 },
+  searchLoader: {
+    marginTop: 20,
   },
 });

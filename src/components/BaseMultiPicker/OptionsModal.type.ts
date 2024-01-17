@@ -23,4 +23,12 @@ export interface OptionsModalProps {
   renderSaveButton?: (onApply: () => void, disabled: boolean) => JSX.Element;
   modalTitleStyle?: StyleProp<TextStyle>;
   searchBarPlaceholder?: string;
+  onSearchTextChange?: (
+    searchText: string,
+    setLoader: (value: boolean) => void
+  ) => void;
+  onEndReached?: (
+    iteration: number,
+    setLoader: (value: boolean) => void
+  ) => void;
 }

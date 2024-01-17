@@ -3,9 +3,11 @@ import { useCallback, useState } from 'react';
 export const useMultiPickerItems = (
   selectedItems: string[],
   onSelectedItemsChange: (selectedItems: string[]) => void,
-  hideDropDown: () => void
+  hideDropDown: () => void,
+  data: string[]
 ) => {
   const [checkedList, setCheckedList] = useState(selectedItems);
+  const checkedDropdownList = data?.filter((i) => selectedItems.includes(i));
 
   const onCheck = useCallback(
     (item: string) => {
@@ -46,5 +48,6 @@ export const useMultiPickerItems = (
     onApply,
     onRemove,
     onCheckMultiple,
+    checkedDropdownList,
   };
 };

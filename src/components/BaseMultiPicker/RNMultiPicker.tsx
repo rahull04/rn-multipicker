@@ -1,13 +1,14 @@
 import React, { useCallback, useState } from 'react';
-import { TouchableOpacity, View, Text, StyleSheet, Image } from 'react-native';
+import { TouchableOpacity, View, Text, Image } from 'react-native';
 
-import ChevronDown from '../assets/icons/chevron-down.png';
+import ChevronDown from '../../assets/icons/chevron-down.png';
 import { OptionsModal } from './OptionsModal';
 import type { RNMultiSelectProps } from './RNMultiPicker.type';
-import { useMultiPickerItems } from '../hooks/useMultiPickerItems';
-import { CheckedItemList } from './CheckedItemList';
-
-const MAX_CHECKED_ITEMS_VISIBLE = 10;
+import { useMultiPickerItems } from '../../hooks/useMultiPickerItems';
+import { CheckedItemList } from '../common/CheckedItemList';
+import { RNSectionedMultiPicker } from '../SectionedMultiPicker/RNSectionedMultiPicker';
+import { rnMultiPickerStyles as styles } from '../common/commonStyles';
+import { MAX_CHECKED_ITEMS_VISIBLE } from '../../constants';
 
 export const RNMultiSelect = ({
   placeholder,
@@ -28,15 +29,26 @@ export const RNMultiSelect = ({
   maxCheckedItemsVisible = MAX_CHECKED_ITEMS_VISIBLE,
   renderViewMoreButton,
   renderViewLessButton,
+  checkedItemsColor,
+  checkedItemsContentColor,
+  onSearchTextChange,
+  onEndReached,
 }: RNMultiSelectProps) => {
   const [dropDownVisible, setDropDownVisible] = useState(false);
 
-  const { checkedList, onCheck, onApply, onRemove, onCheckMultiple } =
-    useMultiPickerItems(selectedItems, onSelectedItemsChange, () =>
-      setDropDownVisible(false)
-    );
-
-  const checkedDropdownList = data?.filter((i) => selectedItems.includes(i));
+  const {
+    checkedList,
+    onCheck,
+    onApply,
+    onRemove,
+    onCheckMultiple,
+    checkedDropdownList,
+  } = useMultiPickerItems(
+    selectedItems,
+    onSelectedItemsChange,
+    () => setDropDownVisible(false),
+    data
+  );
 
   const toggleDropdown = useCallback(() => {
     setDropDownVisible((curr) => !curr);
@@ -57,10 +69,14 @@ export const RNMultiSelect = ({
           selectedItems={selectedItems}
           checkedListCount={checkedList.length}
           maxCheckedItemsVisible={maxCheckedItemsVisible}
+          /* @ts-ignore */
           renderCheckedItem={renderCheckedItem}
           renderViewMoreButton={renderViewMoreButton}
+          /* @ts-ignore */
           onRemove={onRemove}
           renderViewLessButton={renderViewLessButton}
+          checkedItemsColor={checkedItemsColor}
+          checkedItemsContentColor={checkedItemsContentColor}
         />
       </View>
     );
@@ -96,6 +112,8 @@ export const RNMultiSelect = ({
           renderSaveButton={renderSaveButton}
           modalTitleStyle={modalTitleStyle}
           searchBarPlaceholder={searchBarPlaceholder}
+          onSearchTextChange={onSearchTextChange}
+          onEndReached={onEndReached}
         />
       )}
       <TouchableOpacity
@@ -110,54 +128,4 @@ export const RNMultiSelect = ({
   );
 };
 
-const styles = StyleSheet.create({
-  multiSelect: {
-    padding: 8,
-    paddingVertical: 12,
-    borderWidth: 1,
-    borderColor: '#a6a6a6',
-    borderRadius: 20,
-    width: '90%',
-  },
-  defaultLabel: {
-    marginLeft: 4,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  floatingLabel: {
-    position: 'absolute',
-    top: -10,
-    left: 8,
-    backgroundColor: 'white',
-    paddingHorizontal: 4,
-    fontSize: 12,
-    color: '#4d4d4d',
-  },
-  checkedItemsContainer: {
-    flexDirection: 'row',
-    marginBottom: 2,
-    flexWrap: 'wrap',
-  },
-  checkedList: {
-    flex: 1,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-  downArrowIconContainer: {
-    marginRight: 4,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  defaultLabelText: {
-    color: '#666666',
-    fontWeight: 'bold',
-  },
-  defaultLabelCrossContainer: {
-    marginRight: 4,
-  },
-  chevronDown: {
-    width: 16,
-    height: 16,
-  },
-});
+RNMultiSelect.Sectioned = RNSectionedMultiPicker;

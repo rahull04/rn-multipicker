@@ -1,5 +1,5 @@
 import { Image, Pressable, StyleSheet, Text } from 'react-native';
-import ChevronDown from '../assets/icons/chevron-down.png';
+import ChevronDown from '../../assets/icons/chevron-down.png';
 import React from 'react';
 
 interface ViewBtnProps {

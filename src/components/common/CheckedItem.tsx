@@ -1,25 +1,50 @@
 import React from 'react';
 import { Image, Text } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import Cross from '../assets/icons/white-cross.png';
+import Cross from '../../assets/icons/white-cross.png';
 import { Pressable } from 'react-native';
 
 export interface CheckedItemProps {
   title: string;
   onRemove: (value: string) => void;
+  id?: string;
+  color?: string;
+  contentColor?: string;
 }
 
-export const CheckedItem = ({ title, onRemove }: CheckedItemProps) => {
+export const CheckedItem = ({
+  title,
+  onRemove,
+  id,
+  color,
+  contentColor,
+}: CheckedItemProps) => {
   return (
     <Pressable
-      style={styles.checkedItem}
+      style={[
+        styles.checkedItem,
+        color ? { backgroundColor: color } : undefined,
+      ]}
       onStartShouldSetResponder={() => true}
       onTouchEnd={(e) => e.stopPropagation()}
-      onPress={() => onRemove(title)}
+      onPress={() => onRemove(id ?? title)}
     >
-      <Text style={styles.title}>{title}</Text>
+      <Text
+        style={[
+          styles.title,
+          contentColor ? { color: contentColor } : undefined,
+        ]}
+      >
+        {title}
+      </Text>
       <View style={styles.crossContainer}>
-        <Image source={Cross} style={styles.cross} />
+        <Image
+          source={Cross}
+          style={[
+            styles.cross,
+            contentColor ? { tintColor: contentColor } : undefined,
+          ]}
+        />
       </View>
     </Pressable>
   );
